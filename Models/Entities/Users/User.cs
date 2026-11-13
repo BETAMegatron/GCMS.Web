@@ -1,6 +1,6 @@
-﻿using GCMS.Web.Models.Entities.Roles;
+﻿
+using GCMS.Web.Models.Entities.Roles;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 
 namespace GCMS.Web.Models.Entities.Users
 {
@@ -8,12 +8,31 @@ namespace GCMS.Web.Models.Entities.Users
     {
         [Key]
         public int UserID { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }   
-        public string Password { get; set; }
+
+        [Display(Name = "نام")]
+        [Required(ErrorMessage = "لطفاً {0} را وارد کنید")]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Display(Name = "نام خانوادگی")]
+        [Required(ErrorMessage = "لطفاً {0} را وارد کنید")]
+        public string LastName { get; set; } = string.Empty;
+
+        [Display(Name = "نام کاربری")]
+        [Required(ErrorMessage = "لطفاً {0} را وارد کنید")]
+        public string Username { get; set; } = string.Empty;
+
+        [Display(Name = "ایمیل")]
+        [Required(ErrorMessage = "لطفاً {0} را وارد کنید")]
+        [EmailAddress(ErrorMessage = "فرمت ایمیل معتبر نیست")]
+        public string Email { get; set; } = string.Empty;
+
+        [Display(Name = "رمز عبور")]
+        [Required(ErrorMessage = "لطفاً {0} را وارد کنید")]
+        public string Password { get; set; } = string.Empty;
+
+        [Display(Name = "تصویر پروفایل")]
         public string UserProfileImageName { get; set; }
+
         public bool UserIsActived { get; set; } = true;
         public bool Deleted { get; set; } = false;
         public DateTime UserCreationDate { get; set; } = DateTime.UtcNow;

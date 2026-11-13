@@ -1,49 +1,284 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - GCMS.Web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/GCMS.Web.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GCMS.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <title>@ViewData["Title"] - GCMS</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: #f7f8fc;
+            color: #25283b;
+            line-height: 1.8;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        header {
+            background: white;
+            border-bottom: 1px solid #eeeef4;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: 900;
+            color: #7454e8;
+            direction: ltr;
+        }
+
+        .logo span {
+            color: #25283b;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            font-size: 14px;
+            color: #73778a;
+            transition: .2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #7454e8;
+        }
+
+        /* Account Button */
+
+        .header-button {
+            background: #7454e8;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            transition: .2s;
+        }
+
+        .header-button:hover {
+            background: #5c3bc9;
+            transform: translateY(-2px);
+        }
+
+        .menu-button {
+            display: none;
+            border: none;
+            background: #f0edff;
+            color: #7454e8;
+            padding: 8px 13px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Main */
+
+        main {
+            min-height: 70vh;
+        }
+
+        /* Footer */
+
+        footer {
+            background: white;
+            border-top: 1px solid #eeeef4;
+            margin-top: 70px;
+            padding: 45px 0 20px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-description {
+            max-width: 350px;
+            color: #85899b;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 13px;
+            color: #777b8e;
+        }
+
+        .footer-links h4 {
+            color: #25283b;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #eeeef4;
+            margin-top: 35px;
+            padding-top: 18px;
+            color: #999dad;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Responsive */
+
+        @@media(max-width: 768px) {
+
+            .header-content {
+                height: 70px;
+            }
+
+            .menu-button {
+                display: block;
+            }
+
+            nav {
+                display: none;
+                position: absolute;
+                top: 70px;
+                right: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                flex-direction: column;
+                gap: 15px;
+                border-bottom: 1px solid #eeeef4;
+            }
+
+            nav.show {
+                display: flex;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container header-content">
+
+            <a asp-controller="Home" asp-action="Index" class="logo">
+                GCMS<span>.</span>
+            </a>
+
+            <button class="menu-button" onclick="toggleMenu()">☰</button>
+
+            <nav id="mainMenu">
+                <a asp-controller="Home" asp-action="Index" class="active">خانه</a>
+                <a href="/#latest">آخرین اخبار</a>
+                <a href="/#categories">دسته‌بندی‌ها</a>
+                <a href="/#popular">محبوب‌ترین‌ها</a>
+            </nav>
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Account" asp-action="Profile" class="header-button">
+                    👤 @User.Identity.Name
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="header-button">
+                    👤 حساب کاربری
+                </a>
+            }
+
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer>
         <div class="container">
-            &copy; 2026 - GCMS.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+            <div class="footer-content">
+
+                <div>
+                    <a asp-controller="Home" asp-action="Index" class="logo">
+                        GCMS<span>.</span>
+                    </a>
+
+                    <p class="footer-description">
+                        آخرین اخبار، رویدادها و اتفاقات دنیای بازی‌های ویدیویی
+                        را در GCMS دنبال کنید.
+                    </p>
+                </div>
+
+                <div class="footer-links">
+                    <h4>دسترسی سریع</h4>
+                    <a asp-controller="Home" asp-action="Index">صفحه اصلی</a>
+                    <a href="/#latest">آخرین اخبار</a>
+                    <a href="/#categories">دسته‌بندی‌ها</a>
+                </div>
+
+                <div class="footer-links">
+                    <h4>GCMS</h4>
+                    <a href="/#about">درباره ما</a>
+                    <a href="/#popular">اخبار محبوب</a>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <span>© 2026 GCMS - طراحی و ساختار با سازنده | A.Foroutannia.</span>
+                <span>دنیای بازی‌ها، یک قدم جلوتر</span>
+            </div>
+
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("mainMenu").classList.toggle("show");
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

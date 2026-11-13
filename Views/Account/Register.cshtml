@@ -1,0 +1,259 @@
+﻿@model GCMS.Web.Models.ViewModels.Account.RegisterViewModel
+
+@{
+    ViewData["Title"] = "ثبت نام";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<style>
+    .form-title {
+        font-size: 27px;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .form-description {
+        color: #9296a7;
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+    .form-control {
+        width: 100%;
+        height: 44px;
+        border: 1px solid #e8e8f0;
+        border-radius: 9px;
+        padding: 0 13px;
+        font-family: inherit;
+        font-size: 12px;
+        outline: none;
+        transition: .2s;
+    }
+
+        .form-control:focus {
+            border-color: #7454e8;
+            box-shadow: 0 0 0 3px rgba(116,84,232,.09);
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .file-input {
+        padding: 10px;
+        height: auto;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .terms-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 18px 0;
+        font-size: 12px;
+        color: #777b8e;
+    }
+
+        .terms-group input {
+            accent-color: #7454e8;
+        }
+
+        .terms-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .terms-group a {
+            color: #7454e8;
+            font-weight: 600;
+        }
+
+    .submit-button {
+        width: 100%;
+        height: 48px;
+        border: none;
+        border-radius: 10px;
+        background: #7454e8;
+        color: white;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: .2s;
+        margin-top: 8px;
+    }
+
+        .submit-button:hover {
+            background: #5e40ce;
+            transform: translateY(-2px);
+        }
+
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 13px;
+        color: #85899b;
+    }
+
+        .login-link a {
+            color: #7454e8;
+            font-weight: 600;
+        }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 12px;
+        display: block;
+        margin-top: 5px;
+    }
+
+    .validation-summary {
+        margin-bottom: 15px;
+    }
+
+    @@media(max-width: 450px) {
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+    }
+</style>
+
+<div>
+
+    <h1 class="form-title">ایجاد حساب کاربری 🚀</h1>
+
+    <p class="form-description">
+        به خانواده GCMS بپیوند و از دنیای گیمینگ باخبر شو.
+    </p>
+
+    <form asp-controller="Account"
+          asp-action="Register"
+          method="post"
+          enctype="multipart/form-data">
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger validation-summary"></div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label asp-for="FirstName"></label>
+
+                <input asp-for="FirstName"
+                       class="form-control"
+                       placeholder="نام"
+                       autocomplete="given-name" />
+
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LastName"></label>
+
+                <input asp-for="LastName"
+                       class="form-control"
+                       placeholder="نام خانوادگی"
+                       autocomplete="family-name" />
+
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Username"></label>
+
+            <input asp-for="Username"
+                   class="form-control"
+                   placeholder="یک نام کاربری انتخاب کنید"
+                   autocomplete="username" />
+
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+
+            <input asp-for="Email"
+                   type="email"
+                   class="form-control"
+                   placeholder="example@email.com"
+                   autocomplete="email" />
+
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password"></label>
+
+            <input asp-for="Password"
+                   type="password"
+                   class="form-control"
+                   placeholder="رمز عبور"
+                   autocomplete="new-password" />
+
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ConfirmPassword"></label>
+
+            <input asp-for="ConfirmPassword"
+                   type="password"
+                   class="form-control"
+                   placeholder="رمز عبور را مجدداً وارد کنید"
+                   autocomplete="new-password" />
+
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="UserProfileImage"></label>
+
+            <input asp-for="UserProfileImage"
+                   type="file"
+                   class="form-control file-input"
+                   accept="image/png,image/jpeg,image/webp" />
+
+            <span asp-validation-for="UserProfileImage" class="text-danger"></span>
+        </div>
+
+        <div class="terms-group">
+
+            <input asp-for="AcceptTerms" type="checkbox" />
+
+            <label asp-for="AcceptTerms">
+                با <a href="#">قوانین و مقررات سایت</a> موافقم.
+            </label>
+
+        </div>
+
+        <span asp-validation-for="AcceptTerms" class="text-danger"></span>
+
+        <button type="submit" class="submit-button">
+            ایجاد حساب کاربری
+        </button>
+
+    </form>
+
+    <div class="login-link">
+        قبلاً ثبت‌نام کرده‌ای؟
+        <a asp-controller="Account" asp-action="Login">وارد شو</a>
+    </div>
+
+</div>

@@ -3,8 +3,6 @@ using GCMS.Web.Models.Entities.Permission;
 using GCMS.Web.Models.Entities.Roles;
 using GCMS.Web.Models.Entities.Users;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
-
 namespace GCMS.Web.Data.Context
 {
     public class GCMSContext : DbContext

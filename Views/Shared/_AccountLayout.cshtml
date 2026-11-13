@@ -1,0 +1,235 @@
+﻿@{
+    Layout = null;
+    var title = ViewData["Title"] ?? "حساب کاربری";
+}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@title - GCMS</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Vazirmatn', sans-serif;
+                background: #f6f7fc;
+                color: #25283b;
+                min-height: 100vh;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .account-header {
+                height: 80px;
+                background: white;
+                border-bottom: 1px solid #eeeeF5;
+                display: flex;
+                align-items: center;
+            }
+
+            .header-content {
+                width: 90%;
+                max-width: 1200px;
+                margin: auto;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .logo {
+                font-size: 27px;
+                font-weight: 900;
+                color: #7454e8;
+                direction: ltr;
+            }
+
+                .logo span {
+                    color: #25283b;
+                }
+
+            .home-link {
+                color: #777b8e;
+                font-size: 13px;
+                transition: .2s;
+            }
+
+                .home-link:hover {
+                    color: #7454e8;
+                }
+
+            .account-main {
+                width: 90%;
+                max-width: 1100px;
+                min-height: calc(100vh - 145px);
+                margin: 35px auto;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                background: white;
+                border-radius: 24px;
+                overflow: hidden;
+                box-shadow: 0 12px 45px rgba(40, 35, 90, .06);
+            }
+
+            .account-form-area {
+                padding: 55px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .account-visual {
+                background: linear-gradient(145deg, #7454e8, #529cf3);
+                color: white;
+                padding: 55px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .account-visual::before,
+                .account-visual::after {
+                    content: "";
+                    position: absolute;
+                    border: 1px solid rgba(255,255,255,.15);
+                    border-radius: 50%;
+                }
+
+                .account-visual::before {
+                    width: 350px;
+                    height: 350px;
+                    top: -120px;
+                    left: -120px;
+                }
+
+                .account-visual::after {
+                    width: 250px;
+                    height: 250px;
+                    bottom: -100px;
+                    right: -80px;
+                }
+
+            .visual-content {
+                position: relative;
+                z-index: 1;
+            }
+
+            .visual-icon {
+                font-size: 65px;
+                margin-bottom: 25px;
+            }
+
+            .visual-content h2 {
+                font-size: 30px;
+                line-height: 1.8;
+                margin-bottom: 15px;
+            }
+
+            .visual-content p {
+                font-size: 14px;
+                line-height: 2.3;
+                opacity: .85;
+            }
+
+            .account-footer {
+                text-align: center;
+                color: #999dad;
+                font-size: 12px;
+                padding: 15px;
+            }
+
+            @@media(max-width: 800px) {
+                .account-main {
+                    grid-template-columns: 1fr;
+                    max-width: 520px;
+                }
+
+                .account-visual {
+                    display: none;
+                }
+
+                .account-form-area {
+                    padding: 35px 25px;
+                }
+            }
+
+            @@media(max-width: 450px) {
+                .account-header {
+                    height: 65px;
+                }
+
+                .account-main {
+                    margin: 20px auto;
+                    width: 94%;
+                }
+
+                .logo {
+                    font-size: 23px;
+                }
+            }
+    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+
+    <header class="account-header">
+        <div class="header-content">
+
+            <a asp-controller="Home" asp-action="Index" class="logo">
+                GCMS<span>.</span>
+            </a>
+
+            <a asp-controller="Home" asp-action="Index" class="home-link">
+                ← بازگشت به صفحه اصلی
+            </a>
+
+        </div>
+    </header>
+
+    <main class="account-main">
+
+        <section class="account-form-area">
+            @RenderBody()
+        </section>
+
+        <section class="account-visual">
+            <div class="visual-content">
+                <div class="visual-icon">🎮</div>
+
+                <h2>به دنیای GCMS خوش آمدی!</h2>
+
+                <p>
+                    وارد حساب کاربری خودت شو و جدیدترین اخبار،
+                    اتفاقات و رویدادهای دنیای بازی‌های ویدیویی
+                    رو دنبال کن.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="account-footer">
+        © 2026 GCMS - تمامی حقوق محفوظ است.
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
