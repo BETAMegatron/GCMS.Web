@@ -1,20 +1,24 @@
 ﻿using GCMS.Web.Data.Context;
 using GCMS.Web.Models.Entities.Users;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+using GCMS.Web.Models.ViewModels.Account;
+using GCMS.Web.Utilities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using GCMS.Web.Models.ViewModels.Account;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace GCMS.Web.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly GCMSContext _context;
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
         private readonly IWebHostEnvironment _iwebHostEnvironment;
+        private readonly SaveProfileImage _saveprofileimage;
         public AccountController(GCMSContext GCMSContext, IWebHostEnvironment iwebHostEnvironment)
         {
             _context = GCMSContext;
@@ -29,17 +33,17 @@ namespace GCMS.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel user)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return Content("Error 404");
             }
             var usr = _context.Users.FirstOrDefault(u => u.Username == user.Username && !u.Deleted && u.UserIsActived);
-            if(usr == null)
+            if (usr == null)
             {
                 return Content("اطلاعات کاربر یافت نشد");
             }
             var res = _passwordHasher.VerifyHashedPassword(usr, usr.Password, user.Password);
-            if(res == PasswordVerificationResult.Failed)
+            if (res == PasswordVerificationResult.Failed)
             {
                 return Content("پسورد اشتباه می باشد");
             }
@@ -48,7 +52,7 @@ namespace GCMS.Web.Controllers
                 new Claim(ClaimTypes.NameIdentifier,usr.UserID.ToString()),
                 new Claim(ClaimTypes.Name,usr.Username),
             };
-            var Identity = new ClaimsIdentity(Claims,CookieAuthenticationDefaults.AuthenticationScheme);
+            var Identity = new ClaimsIdentity(Claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var Princple = new ClaimsPrincipal(Identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, Princple);
             return RedirectToAction("Index", "Home");
@@ -62,28 +66,28 @@ namespace GCMS.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel user)
         {
-            
+
             if (!ModelState.IsValid)
             {
                 return Content("اطلاعات نا مغتبر می باشد");
             }
             var usr = _context.Users.Any(u => u.Username == user.Username && !u.Deleted);
-            if(usr)
+            if (usr)
             {
                 return Content("نام کاربری قبلا انتخاب شده است");
             }
-            var euser = new User();            
+            var euser = new User();
             euser.FirstName = user.FirstName;
             euser.LastName = user.LastName;
             euser.Email = user.Email;
             euser.Password = _passwordHasher.HashPassword(euser, user.Password);
             euser.Username = user.Username;
-            if(user.UserProfileImage != null)
+            if (user.UserProfileImage != null)
             {
                 string filename = Guid.NewGuid().ToString() + Path.GetExtension(user.UserProfileImage.FileName);
                 string path = Path.Combine(_iwebHostEnvironment.WebRootPath, "Image", "Profile", filename);
                 Directory.CreateDirectory(Path.GetDirectoryName(path!));
-                using (var stream = new FileStream(path,FileMode.Create))
+                using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await user.UserProfileImage.CopyToAsync(stream);
                 }
@@ -93,83 +97,78 @@ namespace GCMS.Web.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Login", "Account");
         }
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
+        //Profile Actions:
+        //تمامی اکشن هایی که مربوط به پروفایل می باشد
+        [HttpGet]
+        public  IActionResult Profile()
+        {
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int userID = int.Parse(id);
+            if (!int.TryParse(id, out int idd))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var usr = _context.Users.FirstOrDefault(u => u.UserID == userID);
+            var uvm = new ProfileViewModel();
+            uvm.UserID = usr.UserID;
+            uvm.FirstName = usr.FirstName;
+            uvm.LastName = usr.LastName;
+            uvm.Username = usr.Username;
+            uvm.Email = usr.Email;
+            uvm.UserProfileImageName = usr.UserProfileImageName;
+            uvm.UserCreationDate = usr.UserCreationDate;
+            uvm.UserIsActived = usr.UserIsActived;
+            return View(uvm);
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(ProfileViewModel user)
+        {
+            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userID, out int ID))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var usr = _context.Users.FirstOrDefault(u => u.UserID == ID && !u.Deleted);
 
+            if (usr == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View("Profile", user);
+            }
+
+            usr.FirstName = user.FirstName;
+            usr.LastName = user.LastName;
+            usr.Username = user.Username;
+            usr.Email = user.Email;
+
+            if(user.UserProfileImageName != null)
+            {
+                usr.UserProfileImageName = await _saveprofileimage.SaveProfileImages(user.UserProfileImage);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Profile", "Account");
+        }
 
     }
 }
 
 /*
-             if (user.UserProfileImage != null)
-            {
-                string fileName = Guid.NewGuid().ToString() +
-                                  Path.GetExtension(user.UserProfileImage.FileName);
-
-                string path = Path.Combine(_iwebHostEnvironment.WebRootPath, "images", "profiles", fileName);
-
-                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await user.UserProfileImage.CopyToAsync(stream);
-                }
-
-                euser.UserProfileImageName = fileName;
-            }
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-         [HttpPost]
-        public async Task<IActionResult> Login(User user)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Content("اطلاعات وارد شده معتبر نیست.");
-            }
-
-            var usr = _context.Users.FirstOrDefault(u =>
-                u.Username == user.Username &&
-                u.UserIsActived == true &&
-                u.Deleted == false
-            );
-
-            if (usr == null)
-            {
-                return Content("نام کاربری یا رمز عبور اشتباه می‌باشد.");
-            }
-
-            var res = _passwordHasher.VerifyHashedPassword(usr, usr.Password, user.Password);
-            if (res == PasswordVerificationResult.Failed)
-            {
-                return Content("نام کاربری یا رمز عبور اشتباه می‌باشد.");
-            }
-            else
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, usr.UserID.ToString()),
-                    new Claim(ClaimTypes.Name, usr.Username)
-                };
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-                return RedirectToAction("Index", "Home");
-            }
-        }
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
  */

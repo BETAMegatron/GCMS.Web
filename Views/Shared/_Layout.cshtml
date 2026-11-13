@@ -1,4 +1,29 @@
-﻿
+﻿@using System.Security.Claims
+@using GCMS.Web.Data.Context
+@inject GCMSContext _context
+
+@{
+    string profileImagePath = Url.Content("~/images/default-profile.png");
+
+    if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (int.TryParse(userID, out int ID))
+        {
+            var imageName = _context.Users
+                .Where(u => u.UserID == ID && !u.Deleted)
+                .Select(u => u.UserProfileImageName)
+                .FirstOrDefault();
+
+            if (!string.IsNullOrEmpty(imageName))
+            {
+                profileImagePath = Url.Content("~/Images/Profile/" + imageName);
+            }
+        }
+    }
+}
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -7,276 +32,338 @@
 
     <title>@ViewData["Title"] - GCMS</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-            background: #f7f8fc;
-            color: #25283b;
-            line-height: 1.8;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        /* Header */
-
-        header {
-            background: white;
-            border-bottom: 1px solid #eeeef4;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            font-size: 27px;
-            font-weight: 900;
-            color: #7454e8;
-            direction: ltr;
-        }
-
-        .logo span {
-            color: #25283b;
-        }
-
-        nav {
-            display: flex;
-            gap: 30px;
-        }
-
-        nav a {
-            font-size: 14px;
-            color: #73778a;
-            transition: .2s;
-        }
-
-        nav a:hover,
-        nav a.active {
-            color: #7454e8;
-        }
-
-        /* Account Button */
-
-        .header-button {
-            background: #7454e8;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 13px;
-            transition: .2s;
-        }
-
-        .header-button:hover {
-            background: #5c3bc9;
-            transform: translateY(-2px);
-        }
-
-        .menu-button {
-            display: none;
-            border: none;
-            background: #f0edff;
-            color: #7454e8;
-            padding: 8px 13px;
-            border-radius: 8px;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        /* Main */
-
-        main {
-            min-height: 70vh;
-        }
-
-        /* Footer */
-
-        footer {
-            background: white;
-            border-top: 1px solid #eeeef4;
-            margin-top: 70px;
-            padding: 45px 0 20px;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-
-        .footer-description {
-            max-width: 350px;
-            color: #85899b;
-            font-size: 13px;
-            margin-top: 10px;
-        }
-
-        .footer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            font-size: 13px;
-            color: #777b8e;
-        }
-
-        .footer-links h4 {
-            color: #25283b;
-            margin-bottom: 8px;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid #eeeef4;
-            margin-top: 35px;
-            padding-top: 18px;
-            color: #999dad;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* Responsive */
-
-        @@media(max-width: 768px) {
-
-            .header-content {
-                height: 70px;
+            * {
+                box-sizing: border-box;
             }
 
-            .menu-button {
-                display: block;
+            body {
+                margin: 0;
+                font-family: 'Vazirmatn', sans-serif;
+                background: #f5f7fb;
+                color: #263248;
             }
 
-            nav {
-                display: none;
-                position: absolute;
-                top: 70px;
-                right: 0;
-                width: 100%;
-                background: white;
-                padding: 20px;
-                flex-direction: column;
-                gap: 15px;
-                border-bottom: 1px solid #eeeef4;
+            a {
+                text-decoration: none;
+                color: inherit;
             }
 
-            nav.show {
+            .site-header {
+                background: #ffffff;
+                border-bottom: 1px solid #e8edf4;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+
+            .header-container {
+                max-width: 1250px;
+                margin: auto;
+                padding: 15px 25px;
                 display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 25px;
             }
 
-            .footer-bottom {
-                flex-direction: column;
-                gap: 8px;
+            .logo {
+                font-size: 25px;
+                font-weight: 800;
+                color: #2563eb;
+                white-space: nowrap;
             }
-        }
+
+                .logo span {
+                    color: #263248;
+                }
+
+            .main-nav {
+                display: flex;
+                align-items: center;
+                gap: 25px;
+            }
+
+                .main-nav a {
+                    color: #526078;
+                    font-size: 14px;
+                    font-weight: 600;
+                    transition: 0.2s;
+                }
+
+                    .main-nav a:hover {
+                        color: #2563eb;
+                    }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .login-button {
+                background: #2563eb;
+                color: #fff;
+                padding: 10px 18px;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 700;
+                transition: 0.2s;
+            }
+
+                .login-button:hover {
+                    background: #1d4ed8;
+                }
+
+            .account-dropdown {
+                position: relative;
+            }
+
+                .account-dropdown summary {
+                    display: flex;
+                    align-items: center;
+                    gap: 9px;
+                    cursor: pointer;
+                    list-style: none;
+                    background: #f1f5ff;
+                    border: 1px solid #e0e9ff;
+                    padding: 7px 12px;
+                    border-radius: 12px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: #334155;
+                }
+
+                    .account-dropdown summary::-webkit-details-marker {
+                        display: none;
+                    }
+
+            .account-profile-image {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #dbeafe;
+            }
+
+            .account-dropdown summary span {
+                color: #64748b;
+            }
+
+            .account-menu {
+                position: absolute;
+                top: 48px;
+                left: 0;
+                width: 210px;
+                background: #fff;
+                border: 1px solid #e8edf4;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+                padding: 8px;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+                .account-menu a {
+                    padding: 10px;
+                    border-radius: 8px;
+                    font-size: 13px;
+                    color: #475569;
+                }
+
+                    .account-menu a:hover {
+                        background: #f1f5ff;
+                        color: #2563eb;
+                    }
+
+                .account-menu hr {
+                    width: 100%;
+                    border: none;
+                    border-top: 1px solid #e8edf4;
+                    margin: 5px 0;
+                }
+
+            .logout-button {
+                width: 100%;
+                border: none;
+                background: transparent;
+                text-align: right;
+                padding: 10px;
+                border-radius: 8px;
+                font-family: inherit;
+                font-size: 13px;
+                color: #dc2626;
+                cursor: pointer;
+            }
+
+                .logout-button:hover {
+                    background: #fef2f2;
+                }
+
+            .page-container {
+                max-width: 1250px;
+                margin: 30px auto;
+                padding: 0 25px;
+                min-height: 65vh;
+            }
+
+            .site-footer {
+                background: #ffffff;
+                border-top: 1px solid #e8edf4;
+                margin-top: 50px;
+                padding: 30px 20px;
+            }
+
+            .footer-container {
+                max-width: 1250px;
+                margin: auto;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+                color: #64748b;
+                font-size: 13px;
+            }
+
+            .footer-logo {
+                font-size: 20px;
+                font-weight: 800;
+                color: #2563eb;
+            }
+
+            @@media (max-width: 850px) {
+                .header-container {
+                    flex-wrap: wrap;
+                }
+
+                .main-nav {
+                    order: 3;
+                    width: 100%;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                    gap: 15px;
+                }
+            }
+
+            @@media (max-width: 600px) {
+                .header-container {
+                    padding: 12px 15px;
+                }
+
+                .logo {
+                    font-size: 21px;
+                }
+
+                .page-container {
+                    padding: 0 15px;
+                }
+
+                .footer-container {
+                    flex-direction: column;
+                    text-align: center;
+                }
+            }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <div class="container header-content">
+    <header class="site-header">
+        <div class="header-container">
 
             <a asp-controller="Home" asp-action="Index" class="logo">
-                GCMS<span>.</span>
+                GCMS <span>News</span>
             </a>
 
-            <button class="menu-button" onclick="toggleMenu()">☰</button>
-
-            <nav id="mainMenu">
-                <a asp-controller="Home" asp-action="Index" class="active">خانه</a>
-                <a href="/#latest">آخرین اخبار</a>
-                <a href="/#categories">دسته‌بندی‌ها</a>
-                <a href="/#popular">محبوب‌ترین‌ها</a>
+            <nav class="main-nav">
+                <a asp-controller="Home" asp-action="Index">صفحه اصلی</a>
+                <a href="#">اخبار</a>
+                <a href="#">دسته‌بندی‌ها</a>
+                <a href="#">درباره ما</a>
+                <a href="#">تماس با ما</a>
             </nav>
 
-            @if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                <a asp-controller="Account" asp-action="Profile" class="header-button">
-                    👤 @User.Identity.Name
-                </a>
-            }
-            else
-            {
-                <a asp-controller="Account" asp-action="Login" class="header-button">
-                    👤 حساب کاربری
-                </a>
-            }
+            <div class="header-left">
+
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <details class="account-dropdown">
+                        <summary>
+                            <img src="@profileImagePath"
+                                 class="account-profile-image"
+                                 alt="تصویر پروفایل" />
+
+                            @User.Identity.Name
+
+                            <span>⌄</span>
+                        </summary>
+
+                        <div class="account-menu">
+
+                            <a asp-controller="Account" asp-action="Profile">
+                                👤 پروفایل من
+                            </a>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-controller="Admin" asp-action="Index">
+                                    🛡️ پنل مدیریت
+                                </a>
+                            }
+
+                            <hr />
+
+                            <form asp-controller="Account"
+                                  asp-action="Logout"
+                                  method="post">
+
+                                <button type="submit" class="logout-button">
+                                    ↪ خروج از حساب
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </details>
+                }
+                else
+                {
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       class="login-button">
+                        ورود / ثبت‌نام
+                    </a>
+                }
+
+            </div>
 
         </div>
     </header>
 
-    <main>
+    <main class="page-container">
         @RenderBody()
     </main>
 
-    <footer>
-        <div class="container">
+    <footer class="site-footer">
+        <div class="footer-container">
 
-            <div class="footer-content">
-
-                <div>
-                    <a asp-controller="Home" asp-action="Index" class="logo">
-                        GCMS<span>.</span>
-                    </a>
-
-                    <p class="footer-description">
-                        آخرین اخبار، رویدادها و اتفاقات دنیای بازی‌های ویدیویی
-                        را در GCMS دنبال کنید.
-                    </p>
-                </div>
-
-                <div class="footer-links">
-                    <h4>دسترسی سریع</h4>
-                    <a asp-controller="Home" asp-action="Index">صفحه اصلی</a>
-                    <a href="/#latest">آخرین اخبار</a>
-                    <a href="/#categories">دسته‌بندی‌ها</a>
-                </div>
-
-                <div class="footer-links">
-                    <h4>GCMS</h4>
-                    <a href="/#about">درباره ما</a>
-                    <a href="/#popular">اخبار محبوب</a>
-                </div>
-
+            <div class="footer-logo">
+                GCMS News
             </div>
 
-            <div class="footer-bottom">
-                <span>© 2026 GCMS - طراحی و ساختار با سازنده | A.Foroutannia.</span>
-                <span>دنیای بازی‌ها، یک قدم جلوتر</span>
+            <div>
+                تمامی حقوق این وب‌سایت محفوظ است.
+            </div>
+
+            <div>
+                طراحی شده با ASP.NET Core
             </div>
 
         </div>
     </footer>
-
-    <script>
-        function toggleMenu() {
-            document.getElementById("mainMenu").classList.toggle("show");
-        }
-    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 
