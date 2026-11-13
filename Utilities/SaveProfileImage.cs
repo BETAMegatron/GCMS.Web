@@ -15,7 +15,7 @@ namespace GCMS.Web.Utilities
         {
             string filename = Guid.NewGuid().ToString() + Path.GetExtension(Image.FileName);
             var path = Path.Combine(_iwebHostEnvironment.WebRootPath, "Image", "Profile", filename);
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            Directory.CreateDirectory(Path.GetDirectoryName(path!));
             using (var stream = new FileStream(path,FileMode.Create))
             {
                 await Image.CopyToAsync(stream);

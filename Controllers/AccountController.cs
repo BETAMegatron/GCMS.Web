@@ -12,7 +12,6 @@ using System.Security.Claims;
 
 namespace GCMS.Web.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private readonly GCMSContext _context;
@@ -104,6 +103,7 @@ namespace GCMS.Web.Controllers
         }
         //Profile Actions:
         //تمامی اکشن هایی که مربوط به پروفایل می باشد
+        //نمایش اطلاعات کاربری
         [HttpGet]
         public  IActionResult Profile()
         {
@@ -126,6 +126,7 @@ namespace GCMS.Web.Controllers
             return View(uvm);
 
         }
+        //ویرایش اطلاعات کاربری
         [HttpPost]
         public async Task<IActionResult> EditProfile(ProfileViewModel user)
         {
@@ -160,15 +161,25 @@ namespace GCMS.Web.Controllers
 
             return RedirectToAction("Profile", "Account");
         }
+        //تغییر رمز عبور
+        [HttpPost]
+        public async Task<IActionResult>ChangePassword(ChangePasswordViewModel changepassword)
+        {
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int userID = int.Parse(id);
+            if(!int.TryParse(id,out int idd))
+            {
+                return View("~/Views/General/Error.cshtml");
+            }
+            var usr = _context.Users.FirstOrDefault(u => u.UserID == userID && !u.Deleted);
+            if(usr.Password == changepassword.CurrentPassword && changepassword.NewPassword == changepassword.ConfirmPassword)
+            {
+                usr.Password = changepassword.NewPassword;
+                await _context.SaveChangesAsync();
+                return RedirectToAction("profile", "Account");
+            }
+            return Content("خطا رخ داده است");
+        }
 
     }
 }
-
-/*
- * 
- * 
- * 
- * 
- * 
- * 
- */
