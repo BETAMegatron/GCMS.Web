@@ -73,6 +73,23 @@ namespace GCMS.Web.Controllers
             }).ToList();
             return View("~/Views/News/NewsCategory.cshtml", model);
         }
+        [HttpGet]
+        public IActionResult News ()
+        {
+            var news = _context.News.Where(n => 
+                                    !n.Deleted && 
+                                    n.NewsIsPublished && 
+                                    n.NewsPublishedDate >= DateTime.Today  
+                                    && n.NewsPublishedDate < DateTime.Today.AddDays(1)).ToList();
+            if(!news.Any())
+            {
+                return Content("اخباری وجود ندارد.");
+            }
+            var model = news.Select(n => new NewsCategoryLatestNewsViewModel
+            {
+
+            }).ToList();
+        }
 
 
 

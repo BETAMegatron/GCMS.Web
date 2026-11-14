@@ -1,0 +1,318 @@
+﻿@model IEnumerable<GCMS.Web.Models.ViewModels.News.NewsCategoryLatestNewsViewModel>
+
+@{
+    ViewData["Title"] = "اخبار";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .news-page {
+        direction: rtl;
+        background: #f5f7fb;
+        min-height: 100vh;
+        padding: 45px 0 75px;
+    }
+
+    .news-page-header {
+        margin-bottom: 45px;
+    }
+
+        .news-page-header h1 {
+            color: #17233d;
+            font-size: 30px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .news-page-header p {
+            color: #778198;
+            font-size: 14px;
+            line-height: 2;
+            margin: 0;
+        }
+
+    .news-category-section {
+        margin-bottom: 55px;
+    }
+
+    .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 22px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e5eaf2;
+    }
+
+    .category-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+        .category-title::before {
+            content: "";
+            width: 5px;
+            height: 28px;
+            background: #2563eb;
+            border-radius: 5px;
+        }
+
+        .category-title h2 {
+            color: #17233d;
+            font-size: 21px;
+            font-weight: 850;
+            margin: 0;
+        }
+
+    .category-more {
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 800;
+        white-space: nowrap;
+        transition: .2s;
+    }
+
+        .category-more:hover {
+            color: #173fa7;
+        }
+
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 23px;
+    }
+
+    .news-card {
+        background: #fff;
+        border: 1px solid #e9edf4;
+        border-radius: 17px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 7px 24px rgba(20, 35, 65, .045);
+        transition: .25s;
+    }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 13px 30px rgba(20, 35, 65, .10);
+        }
+
+    .news-card-image-link {
+        display: block;
+        overflow: hidden;
+    }
+
+    .news-image {
+        width: 100%;
+        height: 205px;
+        object-fit: cover;
+        display: block;
+        background: #e9edf4;
+        transition: transform .35s;
+    }
+
+    .news-card:hover .news-image {
+        transform: scale(1.04);
+    }
+
+    .news-content {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .news-date {
+        color: #8a94a8;
+        font-size: 12px;
+        margin-bottom: 11px;
+    }
+
+    .news-title {
+        color: #17233d;
+        font-size: 17px;
+        font-weight: 850;
+        line-height: 1.9;
+        margin-bottom: 10px;
+    }
+
+        .news-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+            .news-title a:hover {
+                color: #2563eb;
+            }
+
+    .news-description {
+        color: #778198;
+        font-size: 13px;
+        line-height: 2;
+        margin-bottom: 20px;
+        flex: 1;
+    }
+
+    .news-read-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 800;
+        margin-top: auto;
+    }
+
+        .news-read-more:hover {
+            color: #173fa7;
+        }
+
+    .empty-news {
+        background: #fff;
+        border: 1px dashed #d7deea;
+        border-radius: 16px;
+        padding: 40px 20px;
+        text-align: center;
+        color: #8993a6;
+        line-height: 2;
+    }
+
+        .empty-news h3 {
+            color: #26344e;
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+    @@media (max-width: 992px) {
+        .news-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .news-page {
+            padding: 30px 0 50px;
+        }
+
+        .news-page-header h1 {
+            font-size: 25px;
+        }
+
+        .news-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .category-title h2 {
+            font-size: 18px;
+        }
+
+        .news-image {
+            height: 220px;
+        }
+    }
+</style>
+
+<div class="news-page">
+    <div class="container">
+
+        <div class="news-page-header">
+            <h1>آخرین اخبار</h1>
+            <p>
+                جدیدترین اخبار دنیای فناوری، سخت‌افزار، هوش مصنوعی و بازی‌های ویدیویی
+            </p>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var category in Model)
+            {
+                @if (category.LatestNews != null && category.LatestNews.Any())
+                {
+                    <section class="news-category-section">
+
+                        <div class="category-header">
+
+                            <div class="category-title">
+                                <h2>@category.NewsCategoryTitle</h2>
+                            </div>
+
+                            <a asp-controller="News"
+                               asp-action="Category"
+                               asp-route-id="@category.NewsCategoryID"
+                               class="category-more">
+                                مشاهده همه اخبار ←
+                            </a>
+
+                        </div>
+
+                        <div class="news-grid">
+
+                            @foreach (var news in category.LatestNews)
+                            {
+                                <article class="news-card">
+
+                                    <a asp-controller="News"
+                                       asp-action="NewsSingle"
+                                       asp-route-id="@news.NewsID"
+                                       class="news-card-image-link">
+
+                                        <img src="@(string.IsNullOrWhiteSpace(news.NewsImageName)
+                                                                                    ? Url.Content("~/Image/default-news.jpg")
+                                                                                    : Url.Content("~/Image/News/" + news.NewsImageName))"
+                                             alt="@news.NewsTitle"
+                                             class="news-image"
+                                             onerror="this.onerror=null;this.src='@Url.Content("~/Image/default-news.jpg")';" />
+
+                                    </a>
+
+                                    <div class="news-content">
+
+                                        <div class="news-date">
+                                            @news.NewsCreationDate
+                                        </div>
+
+                                        <h3 class="news-title">
+                                            <a asp-controller="News"
+                                               asp-action="NewsSingle"
+                                               asp-route-id="@news.NewsID">
+                                                @news.NewsTitle
+                                            </a>
+                                        </h3>
+
+                                        <p class="news-description">
+                                            @news.NewsShortDescription
+                                        </p>
+
+                                        <a asp-controller="News"
+                                           asp-action="NewsSingle"
+                                           asp-route-id="@news.NewsID"
+                                           class="news-read-more">
+                                            ادامه خبر ←
+                                        </a>
+
+                                    </div>
+
+                                </article>
+                            }
+
+                        </div>
+
+                    </section>
+                }
+            }
+        }
+        else
+        {
+            <div class="empty-news">
+                <h3>خبری برای نمایش وجود ندارد</h3>
+                <p>به‌زودی جدیدترین اخبار در این بخش منتشر خواهند شد.</p>
+            </div>
+        }
+
+    </div>
+</div>
