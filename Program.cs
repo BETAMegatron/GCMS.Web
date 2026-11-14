@@ -1,6 +1,7 @@
 using GCMS.Web.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using GCMS.Web.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<GCMSContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("GCMSDbContext")));
 //Authentication Login Service
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(op => op.LoginPath = "/Account/Login");
+
+builder.Services.AddScoped<SaveProfileImage>();
+
 var app = builder.Build();
 
 

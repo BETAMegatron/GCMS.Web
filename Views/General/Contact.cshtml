@@ -1,0 +1,237 @@
+﻿@model GCMS.Web.Models.ViewModels.General.ContactViewModel
+
+@{
+    ViewData["Title"] = "تماس با ما";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .contact-page {
+        direction: rtl;
+        padding: 55px 20px;
+        background: #f7f8fc;
+        min-height: 75vh;
+    }
+
+    .contact-container {
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    .contact-header {
+        text-align: center;
+        margin-bottom: 45px;
+    }
+
+        .contact-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #202b3c;
+            margin-bottom: 15px;
+        }
+
+        .contact-header p {
+            color: #788397;
+            font-size: 15px;
+            line-height: 2;
+        }
+
+    .contact-content {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    .contact-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, .04);
+        border: 1px solid #edf0f5;
+    }
+
+        .contact-card h3 {
+            font-size: 19px;
+            font-weight: 700;
+            color: #263449;
+            margin-bottom: 25px;
+        }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f2f6;
+    }
+
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+
+    .contact-icon {
+        width: 45px;
+        height: 45px;
+        min-width: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #eef3ff;
+        color: #3767d5;
+        font-size: 20px;
+    }
+
+    .contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+    }
+
+        .contact-info span {
+            font-size: 13px;
+            color: #8993a4;
+        }
+
+        .contact-info a,
+        .contact-info strong {
+            font-size: 15px;
+            font-weight: 600;
+            color: #263449;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+        }
+
+            .contact-info a:hover {
+                color: #3767d5;
+            }
+
+    .address-card {
+        grid-column: 1 / -1;
+    }
+
+    .address-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+        .address-content p {
+            margin: 0;
+            color: #526074;
+            font-size: 14px;
+            line-height: 2.2;
+        }
+
+    @@media (max-width: 768px) {
+        .contact-content {
+            grid-template-columns: 1fr;
+        }
+
+        .address-card {
+            grid-column: auto;
+        }
+
+        .contact-header h1 {
+            font-size: 25px;
+        }
+    }
+</style>
+
+<div class="contact-page">
+    <div class="contact-container">
+
+        <div class="contact-header">
+            <h1>تماس با ما</h1>
+            <p>
+                برای ارتباط با مجموعه GCMS و دریافت راهنمایی،
+                می‌توانید از راه‌های ارتباطی زیر با ما در تماس باشید.
+            </p>
+        </div>
+
+        <div class="contact-content">
+
+            <!-- اطلاعات تماس -->
+            <div class="contact-card">
+                <h3>اطلاعات تماس</h3>
+
+                <div class="contact-item">
+                    <div class="contact-icon">✉</div>
+                    <div class="contact-info">
+                        <span>ایمیل</span>
+                        <a href="mailto:@Model.Email">@Model.Email</a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <div class="contact-info">
+                        <span>تلفن همراه</span>
+                        <a href="tel:@Model.Mobile">@Model.Mobile</a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">☎</div>
+                    <div class="contact-info">
+                        <span>تلفن ثابت</span>
+                        <a href="tel:@Model.Phone">@Model.Phone</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- شبکه های اجتماعی -->
+            <div class="contact-card">
+                <h3>شبکه‌های اجتماعی</h3>
+
+                <div class="contact-item">
+                    <div class="contact-icon">✈</div>
+                    <div class="contact-info">
+                        <span>تلگرام</span>
+                        <a href="https://t.me/@Model.TelegramID"
+                           target="_blank" rel="noopener noreferrer">
+                            @Model.TelegramID
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">◎</div>
+                    <div class="contact-info">
+                        <span>اینستاگرام</span>
+                        <a href="https://instagram.com/@Model.InstagramID"
+                           target="_blank" rel="noopener noreferrer">
+                            @Model.InstagramID
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">◉</div>
+                    <div class="contact-info">
+                        <span>واتساپ</span>
+                        <a href="https://wa.me/@Model.WahtsApp"
+                           target="_blank" rel="noopener noreferrer">
+                            ارتباط در واتساپ
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- آدرس شرکت -->
+            <div class="contact-card address-card">
+                <h3>آدرس شرکت</h3>
+
+                <div class="address-content">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-info">
+                        <span>نشانی دفتر مرکزی</span>
+                        <p>@Model.Address</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
-﻿using GCMS.Web.Models.Entities.News;
+﻿using GCMS.Web.Models.Entities.General;
+using GCMS.Web.Models.Entities.News;
 using GCMS.Web.Models.Entities.Permission;
 using GCMS.Web.Models.Entities.Roles;
 using GCMS.Web.Models.Entities.Users;
@@ -17,6 +18,8 @@ namespace GCMS.Web.Data.Context
         public DbSet<Role> Roles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<About> Abouts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,14 +31,6 @@ namespace GCMS.Web.Data.Context
             // modelBuilder.Entity<NewsCategory>().HasIndex(cn => cn.NewsCategoryTitle).IsUnique().HasFilter("[Deleted] = 0");
             //modelBuilder.Entity<News>().HasOne(n => n.NewsCategory).WithMany(n => n.News).HasForeignKey(n => n.NewsCategoryID);
            //modelBuilder.Entity<User>().HasMany(u => u.UserRoles).WithOne(u => u.user).HasForeignKey(u => u.UserID);
-
-            /*
-HasOne
-WithMany
-HasForeignKey
-             */
-
-
         }
     }
 }

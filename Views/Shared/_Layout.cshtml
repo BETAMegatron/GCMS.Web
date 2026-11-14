@@ -3,6 +3,8 @@
 @inject GCMSContext _context
 
 @{
+    ViewData["Title"] ??= "GCMS";
+
     string profileImagePath = Url.Content("~/images/default-profile.png");
 
     if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -18,7 +20,7 @@
 
             if (!string.IsNullOrEmpty(imageName))
             {
-                profileImagePath = Url.Content("~/Images/Profile/" + imageName);
+                profileImagePath = Url.Content("~/Image/Profile/" + imageName);
             }
         }
     }
@@ -26,13 +28,15 @@
 
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>@ViewData["Title"] - GCMS</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
     <style>
             * {
@@ -272,6 +276,7 @@
 <body>
 
     <header class="site-header">
+
         <div class="header-container">
 
             <a asp-controller="Home" asp-action="Index" class="logo">
@@ -281,9 +286,9 @@
             <nav class="main-nav">
                 <a asp-controller="Home" asp-action="Index">صفحه اصلی</a>
                 <a href="#">اخبار</a>
-                <a href="#">دسته‌بندی‌ها</a>
-                <a href="#">درباره ما</a>
-                <a href="#">تماس با ما</a>
+                <a asp-controller="Home" asp-action="NewsCategory">دسته‌بندی‌ها</a>
+                <a asp-controller="Home" asp-action="About">درباره ما</a>
+                <a asp-controller="Home" asp-action="Contact">تماس با ما</a>
             </nav>
 
             <div class="header-left">
@@ -291,14 +296,18 @@
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
                     <details class="account-dropdown">
+
                         <summary>
+
                             <img src="@profileImagePath"
                                  class="account-profile-image"
-                                 alt="تصویر پروفایل" />
+                                 alt="تصویر پروفایل"
+                                 onerror="this.onerror=null; this.src='@Url.Content("~/images/default-profile.png")';" />
 
                             @User.Identity.Name
 
                             <span>⌄</span>
+
                         </summary>
 
                         <div class="account-menu">
@@ -327,6 +336,7 @@
                             </form>
 
                         </div>
+
                     </details>
                 }
                 else
@@ -341,6 +351,7 @@
             </div>
 
         </div>
+
     </header>
 
     <main class="page-container">
@@ -348,6 +359,7 @@
     </main>
 
     <footer class="site-footer">
+
         <div class="footer-container">
 
             <div class="footer-logo">
@@ -359,10 +371,11 @@
             </div>
 
             <div>
-                طراحی شده با ASP.NET Core
+                a.foroutannia
             </div>
 
         </div>
+
     </footer>
 
     @await RenderSectionAsync("Scripts", required: false)

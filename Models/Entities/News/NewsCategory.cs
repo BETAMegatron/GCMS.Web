@@ -19,6 +19,9 @@ namespace GCMS.Web.Models.Entities.News
 
         public bool IsActive { get; set; } = true;
 
+        public int NewsQuantitiy { get; set; }
+        public string NewsCategoryImageName { get; set; }
+
         [Display(Name = "تاریخ ایجاد")]
         public DateTime NewsCategoryCreationDate { get; set; } = DateTime.UtcNow;
 

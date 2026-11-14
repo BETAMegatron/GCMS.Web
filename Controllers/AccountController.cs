@@ -18,10 +18,12 @@ namespace GCMS.Web.Controllers
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
         private readonly IWebHostEnvironment _iwebHostEnvironment;
         private readonly SaveProfileImage _saveprofileimage;
-        public AccountController(GCMSContext GCMSContext, IWebHostEnvironment iwebHostEnvironment)
+
+        public AccountController(GCMSContext GCMSContext, IWebHostEnvironment iwebHostEnvironment , SaveProfileImage SaveProfileImage)
         {
             _context = GCMSContext;
             _iwebHostEnvironment = iwebHostEnvironment;
+            _saveprofileimage = SaveProfileImage;
         }
 
         [HttpGet]
@@ -126,7 +128,7 @@ namespace GCMS.Web.Controllers
             return View(uvm);
 
         }
-        //ویرایش اطلاعات کاربری
+        //ویرایش اطلاعات کاربری 
         [HttpPost]
         public async Task<IActionResult> EditProfile(ProfileViewModel user)
         {
@@ -152,7 +154,7 @@ namespace GCMS.Web.Controllers
             usr.Username = user.Username;
             usr.Email = user.Email;
 
-            if(user.UserProfileImageName != null)
+            if(user.UserProfileImageName != null && user.UserProfileImageName.Length > 0)
             {
                 usr.UserProfileImageName = await _saveprofileimage.SaveProfileImages(user.UserProfileImage);
             }
@@ -165,20 +167,29 @@ namespace GCMS.Web.Controllers
         [HttpPost]
         public async Task<IActionResult>ChangePassword(ChangePasswordViewModel changepassword)
         {
+            if(!ModelState.IsValid)
+            {
+                return View("~/Views/General/Error.cshtml");
+            }
             var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int userID = int.Parse(id);
             if(!int.TryParse(id,out int idd))
             {
-                return View("~/Views/General/Error.cshtml");
+                return Content("شناسه کاربر نا معتبر می باشد.");
             }
-            var usr = _context.Users.FirstOrDefault(u => u.UserID == userID && !u.Deleted);
-            if(usr.Password == changepassword.CurrentPassword && changepassword.NewPassword == changepassword.ConfirmPassword)
+            var usr = _context.Users.FirstOrDefault(u => u.UserID == userID && !u.Deleted && u.UserIsActived);
+            if(usr ==null)
             {
-                usr.Password = changepassword.NewPassword;
-                await _context.SaveChangesAsync();
-                return RedirectToAction("profile", "Account");
+                return Content("کاربر یافت نشد");
             }
-            return Content("خطا رخ داده است");
+            var res = _passwordHasher.VerifyHashedPassword(usr, usr.Password, changepassword.CurrentPassword);
+            if( res == PasswordVerificationResult.Failed)
+            {
+                return Content("پسورد وارد شده اشتباه می باشد.");
+            }
+            usr.Password = _passwordHasher.HashPassword(usr, changepassword.NewPassword);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Profile", "Account");
         }
 
     }
