@@ -110,6 +110,10 @@ namespace GCMS.Web.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("NewsImageName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("NewsIsPublished")
                         .HasColumnType("bit");
 

@@ -30,5 +30,6 @@ namespace GCMS.Web.Models.ViewModels.News
 
         [Display(Name = "تاریخ ایجاد")]
         public DateTime NewsCategoryCreationDate { get; set; } = DateTime.UtcNow;
+        public List<NewsViewModel> LatestNews { get; set; } = new();
     }
 }

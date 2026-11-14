@@ -1,5 +1,6 @@
 using GCMS.Web.Data.Context;
 using GCMS.Web.Models;
+using GCMS.Web.Models.Entities.News;
 using GCMS.Web.Models.ViewModels.General;
 using GCMS.Web.Models.ViewModels.News;
 using Microsoft.AspNetCore.Mvc;
@@ -54,51 +55,75 @@ namespace GCMS.Web.Controllers
             about.PictureName = abt.PictureName;
             return View("~/Views/General/About.cshtml", about);
         }
+        //نمایش دسته بندی اخبار
         [HttpGet]
         public IActionResult NewsCategory()
         {
-            var newsCat = _context.NewsCategories.Where(nc => nc.IsActive && !nc.Deleted).ToList();
-            if(!newsCat.Any())
+
+            var newscat = _context.NewsCategories.Where(nc => !nc.Deleted && nc.IsActive).Select(model => new NewsCategoryViewModel
+            {
+                NewsCategoryID = model.NewsCategoryID,
+                NewsCategoryTitle = model.NewsCategoryTitle,
+                NewsCategoryDescription = model.NewsCategoryDescription,
+                NewsCategoryImageName = model.NewsCategoryImageName,
+                NewsCategoryCreationDate = model.NewsCategoryCreationDate,
+                NewsQuantitiy = _context.News.Count(n=> !n.Deleted
+                && n.NewsIsPublished && model.NewsCategoryID == n.NewsCategoryID
+                )
+            }).ToList();
+            if (!newscat.Any())
             {
                 return Content("دسته بندی اخباری وجود ندارد.");
             }
-            var model = newsCat.Select(nc => new NewsCategoryViewModel
-            {
-                NewsCategoryTitle = nc.NewsCategoryTitle,
-                NewsCategoryDescription = nc.NewsCategoryDescription,
-                NewsQuantitiy = nc.NewsQuantitiy,
-                NewsCategoryImageName = nc.NewsCategoryImageName,
-
-
-            }).ToList();
-            return View("~/Views/News/NewsCategory.cshtml", model);
+            return View("~/Views/News/NewsCategory.cshtml", newscat);
         }
+        //نمایش خبر ها
         [HttpGet]
-        public IActionResult News ()
+        [HttpGet]
+        public IActionResult News()
         {
-            var news = _context.News.Where(n => 
-                                    !n.Deleted && 
-                                    n.NewsIsPublished && 
-                                    n.NewsPublishedDate >= DateTime.Today  
-                                    && n.NewsPublishedDate < DateTime.Today.AddDays(1)).ToList();
-            if(!news.Any())
+            var news = _context.NewsCategories
+                .Where(category => !category.Deleted && category.IsActive)
+                .Select(category => new NewsCategoryViewModel
+                {
+                    NewsCategoryID = category.NewsCategoryID,
+                    NewsCategoryTitle = category.NewsCategoryTitle,
+                    NewsCategoryDescription = category.NewsCategoryDescription,
+                    NewsCategoryImageName = category.NewsCategoryImageName,
+                    NewsCategoryCreationDate = category.NewsCategoryCreationDate,
+
+                    NewsQuantitiy = _context.News.Count(n =>
+                        n.NewsCategoryID == category.NewsCategoryID &&
+                        !n.Deleted &&
+                        n.NewsIsPublished),
+
+                    LatestNews = _context.News
+                        .Where(n =>
+                            n.NewsCategoryID == category.NewsCategoryID &&
+                            !n.Deleted &&
+                            n.NewsIsPublished)
+                        .OrderByDescending(n => n.NewsPublishedDate)
+                        .Take(6)
+                        .Select(n => new NewsViewModel
+                        {
+                            NewsID = n.NewsID,
+                            NewsTitle = n.NewsTitle,
+                            NewsPublishedDate = n.NewsPublishedDate,
+                            NewsIsPublished = n.NewsIsPublished,
+                            NewsImageName = n.NewsImageName,
+                            NewsCategoryID = n.NewsCategoryID
+                        })
+                        .ToList()
+                })
+                .ToList();
+
+            if (!news.Any())
             {
-                return Content("اخباری وجود ندارد.");
+                return Content("دسته‌بندی‌ای برای نمایش وجود ندارد.");
             }
-            var model = news.Select(n => new NewsCategoryLatestNewsViewModel
-            {
 
-            }).ToList();
+            return View("~/Views/News/News.cshtml", news);
         }
-
-
-
-
-
-
-
-
-
 
 
 

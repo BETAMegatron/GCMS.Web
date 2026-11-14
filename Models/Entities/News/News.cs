@@ -29,6 +29,8 @@ namespace GCMS.Web.Models.Entities.News
         [Display(Name = "آیا خبر منتشر شده است؟")]
         public bool NewsIsPublished { get; set; } = true;
 
+        public string NewsImageName { get; set; }
+
         public bool Deleted { get; set; } = false;
 
         // Foreign Key
