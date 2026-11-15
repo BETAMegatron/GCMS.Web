@@ -1,0 +1,428 @@
+﻿@{
+    ViewData["Title"] = "داشبورد مدیریت";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .dashboard-welcome {
+        padding: 28px 30px;
+        margin-bottom: 28px;
+        border-radius: 17px;
+        background: linear-gradient(120deg, #17345f, #2866b4);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .dashboard-welcome::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            left: -60px;
+            top: -100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.07);
+        }
+
+        .dashboard-welcome h2 {
+            margin: 0 0 12px;
+            font-size: 22px;
+            font-weight: 800;
+            position: relative;
+        }
+
+        .dashboard-welcome p {
+            margin: 0;
+            color: #d9e7fb;
+            font-size: 13px;
+            line-height: 2;
+            position: relative;
+        }
+
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 22px 18px;
+        border-radius: 15px;
+        background: #fff;
+        box-shadow: 0 5px 20px rgba(20,40,75,.045);
+        transition: transform .2s, box-shadow .2s;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(20,40,75,.09);
+        }
+
+    .stat-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 52px;
+        height: 52px;
+        border-radius: 13px;
+        font-size: 23px;
+    }
+
+        .stat-icon.blue {
+            background: #e8f1ff;
+            color: #2866b4;
+        }
+
+        .stat-icon.green {
+            background: #e5f7ee;
+            color: #23945d;
+        }
+
+        .stat-icon.orange {
+            background: #fff2df;
+            color: #d88a25;
+        }
+
+        .stat-icon.purple {
+            background: #f0eaff;
+            color: #7952c7;
+        }
+
+    .stat-info span {
+        display: block;
+        margin-bottom: 8px;
+        color: #8a96a8;
+        font-size: 12px;
+    }
+
+    .stat-info strong {
+        color: #203653;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+        gap: 22px;
+    }
+
+    .dashboard-panel {
+        padding: 23px;
+        border-radius: 15px;
+        background: #fff;
+        box-shadow: 0 5px 20px rgba(20,40,75,.045);
+    }
+
+    .panel-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+        .panel-heading h3 {
+            margin: 0;
+            color: #243752;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .panel-heading a {
+            color: #2866b4;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+    .latest-news-item {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 14px 0;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+        .latest-news-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+    .latest-news-image {
+        width: 65px;
+        height: 58px;
+        flex-shrink: 0;
+        overflow: hidden;
+        border-radius: 9px;
+        background: #edf1f7;
+    }
+
+        .latest-news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .latest-news-info {
+        min-width: 0;
+        flex: 1;
+    }
+
+        .latest-news-info h4 {
+            margin: 0 0 7px;
+            color: #293d5b;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.8;
+        }
+
+        .latest-news-info span {
+            color: #929daf;
+            font-size: 10px;
+        }
+
+    .quick-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+    }
+
+    .quick-action {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+        border: 1px solid #edf0f5;
+        border-radius: 11px;
+        color: #344761;
+        font-size: 12px;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+        .quick-action:hover {
+            border-color: #c8dcf8;
+            background: #f5f9ff;
+            color: #2866b4;
+        }
+
+    .quick-action-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border-radius: 9px;
+        background: #eaf2ff;
+        color: #2866b4;
+        font-size: 17px;
+    }
+
+    .dashboard-empty {
+        padding: 30px 10px;
+        color: #929daf;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    @@media (max-width: 1100px) {
+        .dashboard-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 750px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 500px) {
+        .dashboard-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-welcome {
+            padding: 23px 20px;
+        }
+
+            .dashboard-welcome h2 {
+                font-size: 19px;
+            }
+
+        .dashboard-panel {
+            padding: 17px;
+        }
+    }
+</style>
+
+<div class="admin-page-heading">
+    <h1>داشبورد مدیریت</h1>
+    <p>نمای کلی وضعیت و فعالیت‌های سیستم مدیریت محتوای GCMS</p>
+</div>
+
+<!-- Welcome -->
+<div class="dashboard-welcome">
+    <h2>به پنل مدیریت GCMS خوش آمدید 👋</h2>
+    <p>
+        از طریق این بخش می‌توانید اخبار، دسته‌بندی‌ها، کاربران و سایر اطلاعات سایت را مدیریت کنید.
+    </p>
+</div>
+
+<!-- Statistics -->
+<div class="dashboard-stats">
+
+    <div class="stat-card">
+        <div class="stat-icon blue">▤</div>
+        <div class="stat-info">
+            <span>تعداد کل اخبار</span>
+            <strong>@(ViewBag.NewsCount ?? 0)</strong>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon green">▧</div>
+        <div class="stat-info">
+            <span>دسته‌بندی‌ها</span>
+            <strong>@(ViewBag.NewsCategoryCount ?? 0)</strong>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon orange">♙</div>
+        <div class="stat-info">
+            <span>کاربران</span>
+            <strong>@(ViewBag.UsersCount ?? 0)</strong>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon purple">✓</div>
+        <div class="stat-info">
+            <span>اخبار منتشرشده</span>
+            <strong>@(ViewBag.PublishedNewsCount ?? 0)</strong>
+        </div>
+    </div>
+
+</div>
+
+<!-- Dashboard Content -->
+<div class="dashboard-grid">
+
+    <!-- Latest News -->
+    <div class="dashboard-panel">
+
+        <div class="panel-heading">
+            <h3>آخرین اخبار ثبت‌شده</h3>
+
+            <a asp-area="Admin"
+               asp-controller="News"
+               asp-action="Index">
+                مشاهده همه
+            </a>
+        </div>
+
+        @if (ViewBag.LatestNews != null && ViewBag.LatestNews.Count > 0)
+        {
+            foreach (var news in ViewBag.LatestNews)
+            {
+                <div class="latest-news-item">
+
+                    <div class="latest-news-image">
+                        @if (!string.IsNullOrWhiteSpace(news.NewsImageName))
+                        {
+                            <img src="~/Image/News/@news.NewsImageName"
+                                 alt="@news.NewsTitle"
+                                 onerror="this.onerror=null;this.src='/Image/News/default-news.jpg';" />
+                        }
+                        else
+                        {
+                            <img src="~/Image/News/default-news.jpg"
+                                 alt="تصویر خبر" />
+                        }
+                    </div>
+
+                    <div class="latest-news-info">
+                        <h4>@news.NewsTitle</h4>
+
+                        <span>
+                            @if (news.NewsCreationDate != null)
+                            {
+                                @news.NewsCreationDate.ToString("yyyy/MM/dd")
+                            }
+                        </span>
+                    </div>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="dashboard-empty">
+                هنوز خبری برای نمایش ثبت نشده است.
+            </div>
+        }
+
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="dashboard-panel">
+
+        <div class="panel-heading">
+            <h3>دسترسی سریع</h3>
+        </div>
+
+        <div class="quick-actions">
+
+            <a asp-area="Admin"
+               asp-controller="News"
+               asp-action="Create"
+               class="quick-action">
+                <span class="quick-action-icon">＋</span>
+                افزودن خبر جدید
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="NewsCategory"
+               asp-action="Create"
+               class="quick-action">
+                <span class="quick-action-icon">▧</span>
+                افزودن دسته‌بندی جدید
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Users"
+               asp-action="Index"
+               class="quick-action">
+                <span class="quick-action-icon">♙</span>
+                مدیریت کاربران
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Roles"
+               asp-action="Index"
+               class="quick-action">
+                <span class="quick-action-icon">♧</span>
+                مدیریت نقش‌ها و دسترسی‌ها
+            </a>
+
+            <a asp-area=""
+               asp-controller="Home"
+               asp-action="Index"
+               class="quick-action">
+                <span class="quick-action-icon">⌂</span>
+                مشاهده سایت
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+

@@ -1,0 +1,529 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - پنل مدیریت GCMS</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: 'Vazirmatn', sans-serif;
+                background: #f4f6fb;
+                color: #26344d;
+            }
+
+            a {
+                text-decoration: none;
+            }
+
+            /* Main Layout */
+
+            .admin-wrapper {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            /* Sidebar */
+
+            .admin-sidebar {
+                position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 265px;
+                padding: 25px 17px;
+                background: #111d35;
+                color: #fff;
+                overflow-y: auto;
+                z-index: 1000;
+                transition: transform .3s ease;
+            }
+
+            .admin-brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 5px 10px 25px;
+                border-bottom: 1px solid rgba(255,255,255,.09);
+            }
+
+            .admin-brand-logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 45px;
+                height: 45px;
+                border-radius: 13px;
+                background: linear-gradient(135deg, #3277d5, #164b9c);
+                font-size: 20px;
+                font-weight: 800;
+            }
+
+            .admin-brand-text h2 {
+                margin: 0;
+                font-size: 20px;
+                font-weight: 800;
+                letter-spacing: 1px;
+            }
+
+            .admin-brand-text span {
+                display: block;
+                margin-top: 3px;
+                color: #8fa5c8;
+                font-size: 11px;
+            }
+
+            .sidebar-section-title {
+                margin: 27px 12px 12px;
+                color: #7186a9;
+                font-size: 11px;
+                font-weight: 700;
+            }
+
+            .admin-menu {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+                .admin-menu a {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 12px 13px;
+                    border-radius: 9px;
+                    color: #b7c5db;
+                    font-size: 13px;
+                    transition: .2s ease;
+                }
+
+                    .admin-menu a:hover {
+                        background: rgba(255,255,255,.08);
+                        color: #fff;
+                    }
+
+                    .admin-menu a.active {
+                        background: #2466c1;
+                        color: #fff;
+                        box-shadow: 0 5px 15px rgba(36,102,193,.25);
+                    }
+
+            .menu-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 22px;
+                font-size: 17px;
+            }
+
+            .sidebar-bottom {
+                margin-top: 35px;
+                padding-top: 18px;
+                border-top: 1px solid rgba(255,255,255,.09);
+            }
+
+                .sidebar-bottom a {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 12px 13px;
+                    color: #aebed5;
+                    font-size: 13px;
+                    border-radius: 9px;
+                }
+
+                    .sidebar-bottom a:hover {
+                        background: rgba(255,255,255,.08);
+                        color: #fff;
+                    }
+
+            /* Main Content */
+
+            .admin-main {
+                flex: 1;
+                min-width: 0;
+                margin-right: 265px;
+            }
+
+            /* Header */
+
+            .admin-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                min-height: 78px;
+                padding: 0 30px;
+                background: #fff;
+                border-bottom: 1px solid #e9edf4;
+                box-shadow: 0 3px 12px rgba(20,40,75,.025);
+            }
+
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .menu-toggle {
+                display: none;
+                width: 40px;
+                height: 40px;
+                border: none;
+                border-radius: 9px;
+                background: #edf3fb;
+                color: #244d83;
+                font-size: 20px;
+                cursor: pointer;
+            }
+
+            .header-title {
+                color: #243752;
+                font-size: 16px;
+                font-weight: 700;
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 18px;
+            }
+
+            .header-date {
+                color: #8995a8;
+                font-size: 12px;
+            }
+
+            .admin-user {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding-right: 17px;
+                border-right: 1px solid #edf0f5;
+            }
+
+            .admin-user-avatar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 39px;
+                height: 39px;
+                border-radius: 50%;
+                background: #e7effc;
+                color: #245da8;
+                font-size: 17px;
+            }
+
+            .admin-user-info strong {
+                display: block;
+                color: #293b57;
+                font-size: 12px;
+            }
+
+            .admin-user-info span {
+                display: block;
+                margin-top: 3px;
+                color: #929daf;
+                font-size: 10px;
+            }
+
+            /* Page Content */
+
+            .admin-content {
+                padding: 30px;
+                min-height: calc(100vh - 78px);
+            }
+
+            .admin-page-heading {
+                margin-bottom: 25px;
+            }
+
+                .admin-page-heading h1 {
+                    margin: 0 0 8px;
+                    color: #1c304f;
+                    font-size: 23px;
+                    font-weight: 800;
+                }
+
+                .admin-page-heading p {
+                    margin: 0;
+                    color: #8a96a8;
+                    font-size: 13px;
+                    line-height: 1.9;
+                }
+
+            /* Footer */
+
+            .admin-footer {
+                padding: 18px 30px;
+                border-top: 1px solid #e9edf4;
+                background: #fff;
+                color: #929daf;
+                font-size: 11px;
+                text-align: center;
+            }
+
+            /* Overlay */
+
+            .admin-overlay {
+                display: none;
+            }
+
+            /* Responsive */
+
+            @@media (max-width: 992px) {
+                .admin-sidebar {
+                    transform: translateX(100%);
+                }
+
+                    .admin-sidebar.show {
+                        transform: translateX(0);
+                    }
+
+                .admin-main {
+                    margin-right: 0;
+                }
+
+                .menu-toggle {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .admin-overlay.show {
+                    display: block;
+                    position: fixed;
+                    inset: 0;
+                    background: rgba(10,20,40,.45);
+                    z-index: 999;
+                }
+            }
+
+            @@media (max-width: 600px) {
+                .admin-header {
+                    min-height: 68px;
+                    padding: 0 15px;
+                }
+
+                .admin-content {
+                    padding: 22px 15px;
+                }
+
+                .header-date {
+                    display: none;
+                }
+
+                .header-title {
+                    font-size: 13px;
+                }
+
+                .admin-user {
+                    padding-right: 10px;
+                    gap: 7px;
+                }
+
+                .admin-user-info {
+                    display: none;
+                }
+
+                .admin-page-heading h1 {
+                    font-size: 20px;
+                }
+            }
+    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+
+    <div class="admin-wrapper">
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+
+            <div class="admin-brand">
+                <div class="admin-brand-logo">G</div>
+
+                <div class="admin-brand-text">
+                    <h2>GCMS</h2>
+                    <span>مدیریت سیستم</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section-title">
+                منوی اصلی
+            </div>
+
+            <nav class="admin-menu">
+
+                <a asp-area="Admin"
+                   asp-controller="Dashboard"
+                   asp-action="Index">
+                    <span class="menu-icon">▦</span>
+                    <span>داشبورد</span>
+                </a>
+
+                <a asp-area="Admin"
+                   asp-controller="News"
+                   asp-action="Index">
+                    <span class="menu-icon">▤</span>
+                    <span>مدیریت اخبار</span>
+                </a>
+
+                <a asp-area="Admin"
+                   asp-controller="NewsCategory"
+                   asp-action="Index">
+                    <span class="menu-icon">▧</span>
+                    <span>دسته‌بندی اخبار</span>
+                </a>
+
+                <a asp-area="Admin"
+                   asp-controller="Users"
+                   asp-action="Index">
+                    <span class="menu-icon">♙</span>
+                    <span>مدیریت کاربران</span>
+                </a>
+
+                <a asp-area="Admin"
+                   asp-controller="Roles"
+                   asp-action="Index">
+                    <span class="menu-icon">♧</span>
+                    <span>نقش‌ها و دسترسی‌ها</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-section-title">
+                تنظیمات سایت
+            </div>
+
+            <nav class="admin-menu">
+
+                <a asp-area="Admin"
+                   asp-controller="About"
+                   asp-action="Index">
+                    <span class="menu-icon">ⓘ</span>
+                    <span>درباره ما</span>
+                </a>
+
+                <a asp-area="Admin"
+                   asp-controller="Contact"
+                   asp-action="Index">
+                    <span class="menu-icon">✉</span>
+                    <span>اطلاعات تماس</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a asp-area=""
+                   asp-controller="Home"
+                   asp-action="Index">
+                    <span class="menu-icon">⌂</span>
+                    <span>بازگشت به سایت</span>
+                </a>
+
+                <a asp-area=""
+                   asp-controller="Account"
+                   asp-action="Logout">
+                    <span class="menu-icon">⇥</span>
+                    <span>خروج از حساب</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+        <div class="admin-overlay" id="adminOverlay"></div>
+
+        <!-- Main -->
+        <main class="admin-main">
+
+            <!-- Header -->
+            <header class="admin-header">
+
+                <div class="header-right">
+
+                    <button type="button"
+                            class="menu-toggle"
+                            id="menuToggle">
+                        ☰
+                    </button>
+
+                    <div class="header-title">
+                        پنل مدیریت GCMS
+                    </div>
+
+                </div>
+
+                <div class="header-left">
+
+                    <div class="header-date">
+                        سیستم مدیریت محتوا
+                    </div>
+
+                    <div class="admin-user">
+
+                        <div class="admin-user-avatar">
+                            ♙
+                        </div>
+
+                        <div class="admin-user-info">
+                            <strong>@User.Identity?.Name</strong>
+                            <span>مدیر سیستم</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- Page Content -->
+            <section class="admin-content">
+
+                @RenderBody()
+
+            </section>
+
+            <!-- Footer -->
+            <footer class="admin-footer">
+                تمامی حقوق برای GCMS محفوظ است.
+                © @DateTime.Now.Year
+            </footer>
+
+        </main>
+
+    </div>
+
+    <script>
+            const menuToggle = document.getElementById("menuToggle");
+            const adminSidebar = document.getElementById("adminSidebar");
+            const adminOverlay = document.getElementById("adminOverlay");
+
+            menuToggle.addEventListener("click", function() {
+                adminSidebar.classList.toggle("show");
+                adminOverlay.classList.toggle("show");
+            });
+
+            adminOverlay.addEventListener("click", function() {
+                adminSidebar.classList.remove("show");
+                adminOverlay.classList.remove("show");
+            });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
+
