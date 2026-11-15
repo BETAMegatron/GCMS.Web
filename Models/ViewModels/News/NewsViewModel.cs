@@ -11,15 +11,11 @@ namespace GCMS.Web.Models.ViewModels.News
         public string NewsTitle { get; set; } = string.Empty;
         [Display(Name = "تاریخ انتشار")]
         public DateTime? NewsPublishedDate { get; set; }
+        [Display(Name = "توضیحات خبر")]
+        public string NewsDescription { get; set; } = string.Empty;
         [Display(Name = "آیا خبر منتشر شده است؟")]
         public bool NewsIsPublished { get; set; } = true;
         public string? NewsImageName { get; set; }
         public int NewsCategoryID { get; set; }
     }
 }
-
-/*
-             var newscat = _context.NewsCategories
-                    .Where(nc => !!nc.Deleted && nc.IsActive)
-                    .Select(nc => nc.NewsCategoryID).ToList();
- */

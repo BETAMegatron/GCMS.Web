@@ -1,5 +1,413 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model GCMS.Web.Models.ViewModels.News.NewsViewModel
+
 @{
+    ViewData["Title"] = Model.NewsTitle;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var imagePath = string.IsNullOrWhiteSpace(Model.NewsImageName)
+        ? Url.Content("~/Image/News/default-news.jpg")
+        : Url.Content("~/Image/News/" + Model.NewsImageName);
 }
+
+<div class="single-news-page" dir="rtl">
+
+    <div class="news-container">
+
+        <!-- Breadcrumb -->
+        <div class="news-breadcrumb">
+            <a asp-controller="Home" asp-action="Index">صفحه اصلی</a>
+            <span>/</span>
+            <a asp-controller="News" asp-action="News">اخبار</a>
+            <span>/</span>
+            <span class="current">جزئیات خبر</span>
+        </div>
+
+        <!-- News Header -->
+        <header class="news-header">
+
+            <div class="news-label">
+                <span class="label-dot"></span>
+                خبر و گزارش
+            </div>
+
+            <h1 class="news-title">
+                @Model.NewsTitle
+            </h1>
+
+            <div class="news-meta">
+
+                <div class="meta-item">
+                    <span class="meta-icon">📅</span>
+                    <span>
+                        @if (Model.NewsPublishedDate.HasValue)
+                        {
+                            @Model.NewsPublishedDate.Value.ToString("yyyy/MM/dd")
+                        }
+                        else
+                        {
+                            <text>تاریخ نامشخص</text>
+                        }
+                    </span>
+                </div>
+
+                <span class="meta-divider"></span>
+
+                <div class="meta-item">
+                    <span class="meta-icon">📰</span>
+                    <span>اخبار GCMS</span>
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- Main Image -->
+        <div class="news-image-wrapper">
+
+            <img src="@imagePath"
+                 alt="@Model.NewsTitle"
+                 class="news-main-image"
+                 onerror="this.onerror=null;this.src='@Url.Content("~/Image/News/default-news.jpg")';" />
+
+            <div class="image-caption">
+                @Model.NewsTitle
+            </div>
+
+        </div>
+
+        <!-- News Content -->
+        <article class="news-content">
+
+            <div class="content-heading">
+                <span class="heading-line"></span>
+                <h2>شرح خبر</h2>
+            </div>
+
+            <div class="news-description">
+                @Model.NewsDescription
+            </div>
+
+        </article>
+
+        <!-- Bottom Section -->
+        <div class="news-footer">
+
+            <div class="footer-brand">
+                <span class="brand-icon">G</span>
+                <div>
+                    <strong>GCMS</strong>
+                    <small>مرجع اخبار دنیای فناوری و بازی</small>
+                </div>
+            </div>
+
+            <a asp-controller="Home"
+               asp-action="News"
+               class="back-news-button">
+                بازگشت به اخبار
+                <span>←</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+    .single-news-page {
+        background: #f5f7fb;
+        min-height: 100vh;
+        padding: 45px 20px 80px;
+        color: #172033;
+        font-family: inherit;
+    }
+
+    .news-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 22px;
+        padding: 40px;
+        box-shadow: 0 12px 45px rgba(20, 35, 65, 0.07);
+    }
+
+    /* Breadcrumb */
+
+    .news-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        color: #929bad;
+        font-size: 13px;
+        margin-bottom: 35px;
+    }
+
+    .news-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .news-breadcrumb a:hover {
+        color: #2563eb;
+    }
+
+    .news-breadcrumb .current {
+        color: #2563eb;
+        font-weight: 600;
+    }
+
+    /* Header */
+
+    .news-header {
+        margin-bottom: 30px;
+    }
+
+    .news-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #2563eb;
+        background: #eff6ff;
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .label-dot {
+        width: 7px;
+        height: 7px;
+        background: #2563eb;
+        border-radius: 50%;
+    }
+
+    .news-title {
+        font-size: 32px;
+        line-height: 1.9;
+        font-weight: 800;
+        color: #172033;
+        margin: 0 0 22px;
+    }
+
+    .news-meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        color: #778399;
+        font-size: 13px;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .meta-icon {
+        font-size: 16px;
+    }
+
+    .meta-divider {
+        width: 1px;
+        height: 17px;
+        background: #e2e8f0;
+    }
+
+    /* Image */
+
+    .news-image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 480px;
+        border-radius: 18px;
+        overflow: hidden;
+        background: #e9edf5;
+        margin-bottom: 45px;
+    }
+
+    .news-main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.5s ease;
+    }
+
+    .news-image-wrapper:hover .news-main-image {
+        transform: scale(1.025);
+    }
+
+    .image-caption {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        padding: 35px 25px 18px;
+        color: #ffffff;
+        font-size: 13px;
+        background: linear-gradient(transparent, rgba(0,0,0,0.65));
+    }
+
+    /* Content */
+
+    .news-content {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .content-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .heading-line {
+        width: 5px;
+        height: 28px;
+        border-radius: 5px;
+        background: #2563eb;
+    }
+
+    .content-heading h2 {
+        font-size: 21px;
+        font-weight: 800;
+        margin: 0;
+        color: #172033;
+    }
+
+    .news-description {
+        color: #475569;
+        font-size: 16px;
+        line-height: 2.5;
+        text-align: justify;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    /* Footer */
+
+    .news-footer {
+        border-top: 1px solid #edf0f5;
+        margin-top: 50px;
+        padding-top: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brand-icon {
+        width: 43px;
+        height: 43px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        border-radius: 12px;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .footer-brand strong {
+        display: block;
+        font-size: 16px;
+        color: #172033;
+    }
+
+    .footer-brand small {
+        display: block;
+        color: #94a3b8;
+        font-size: 11px;
+        margin-top: 4px;
+    }
+
+    .back-news-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        background: #eff6ff;
+        color: #2563eb;
+        text-decoration: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        transition: 0.25s;
+    }
+
+    .back-news-button:hover {
+        background: #2563eb;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
+
+    @@media (max-width: 768px) {
+
+        .single-news-page {
+            padding: 20px 12px 45px;
+        }
+
+        .news-container {
+            padding: 22px 17px;
+            border-radius: 16px;
+        }
+
+        .news-title {
+            font-size: 23px;
+            line-height: 1.9;
+        }
+
+        .news-image-wrapper {
+            height: 300px;
+            border-radius: 13px;
+            margin-bottom: 30px;
+        }
+
+        .news-description {
+            font-size: 14px;
+            line-height: 2.3;
+        }
+
+        .news-footer {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .back-news-button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 450px) {
+
+        .news-image-wrapper {
+            height: 230px;
+        }
+
+        .news-title {
+            font-size: 20px;
+        }
+
+        .news-meta {
+            gap: 10px;
+            font-size: 11px;
+        }
+    }
+
+</style>

@@ -79,50 +79,38 @@ namespace GCMS.Web.Controllers
         }
         //نمایش خبر ها
         [HttpGet]
-        [HttpGet]
         public IActionResult News()
         {
-            var news = _context.NewsCategories
-                .Where(category => !category.Deleted && category.IsActive)
-                .Select(category => new NewsCategoryViewModel
-                {
-                    NewsCategoryID = category.NewsCategoryID,
-                    NewsCategoryTitle = category.NewsCategoryTitle,
-                    NewsCategoryDescription = category.NewsCategoryDescription,
-                    NewsCategoryImageName = category.NewsCategoryImageName,
-                    NewsCategoryCreationDate = category.NewsCategoryCreationDate,
+            var newcat = _context.NewsCategories
+                      .Where(nc => !nc.Deleted && nc.IsActive)
+                      .Select(model => new NewsCategoryViewModel
+                      {
+                          NewsCategoryID = model.NewsCategoryID,
+                          NewsCategoryTitle = model.NewsCategoryTitle,
+                          NewsCategoryDescription = model.NewsCategoryDescription,
+                          NewsCategoryImageName = model.NewsCategoryImageName,
+                          NewsQuantitiy = _context.News
+                                                  .Count(n => !n.Deleted && n.NewsIsPublished
+                                                   && n.NewsCategoryID == model.NewsCategoryID),
+                          LatestNews = _context.News.Where(n => !n.Deleted && n.NewsIsPublished && n.NewsCategoryID == model.NewsCategoryID)
+                                                    .OrderByDescending(n => n.NewsPublishedDate)
+                                                    .Take(6)
+                                                    .Select( nmodel =>  new NewsViewModel{
+                                                        NewsID = nmodel.NewsID,
+                                                        NewsTitle = nmodel.NewsTitle,
+                                                        NewsPublishedDate = nmodel.NewsPublishedDate,
+                                                        NewsIsPublished = nmodel.NewsIsPublished,
+                                                        NewsImageName = nmodel.NewsImageName,
+                                                        NewsCategoryID = nmodel.NewsCategoryID
+                                                    }).ToList()
+                      }).ToList();
 
-                    NewsQuantitiy = _context.News.Count(n =>
-                        n.NewsCategoryID == category.NewsCategoryID &&
-                        !n.Deleted &&
-                        n.NewsIsPublished),
-
-                    LatestNews = _context.News
-                        .Where(n =>
-                            n.NewsCategoryID == category.NewsCategoryID &&
-                            !n.Deleted &&
-                            n.NewsIsPublished)
-                        .OrderByDescending(n => n.NewsPublishedDate)
-                        .Take(6)
-                        .Select(n => new NewsViewModel
-                        {
-                            NewsID = n.NewsID,
-                            NewsTitle = n.NewsTitle,
-                            NewsPublishedDate = n.NewsPublishedDate,
-                            NewsIsPublished = n.NewsIsPublished,
-                            NewsImageName = n.NewsImageName,
-                            NewsCategoryID = n.NewsCategoryID
-                        })
-                        .ToList()
-                })
-                .ToList();
-
-            if (!news.Any())
+            if (!newcat.Any())
             {
                 return Content("دسته‌بندی‌ای برای نمایش وجود ندارد.");
             }
 
-            return View("~/Views/News/News.cshtml", news);
+            return View("~/Views/News/News.cshtml", newcat);
         }
 
 
