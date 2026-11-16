@@ -190,6 +190,17 @@
                     margin: 5px 0;
                 }
 
+                .account-menu .admin-panel-link {
+                    background: #eff6ff;
+                    color: #1d4ed8;
+                    font-weight: 700;
+                }
+
+                    .account-menu .admin-panel-link:hover {
+                        background: #dbeafe;
+                        color: #1e40af;
+                    }
+
             .logout-button {
                 width: 100%;
                 border: none;
@@ -316,9 +327,12 @@
                                 👤 پروفایل من
                             </a>
 
-                            @if (User.IsInRole("Admin"))
+                            @if (User.IsInRole("مدیریت سامانه"))
                             {
-                                <a asp-controller="Admin" asp-action="Index">
+                                <a asp-area="Admin"
+                                   asp-controller="Home"
+                                   asp-action="Index"
+                                   class="admin-panel-link">
                                     🛡️ پنل مدیریت
                                 </a>
                             }

@@ -9,6 +9,10 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Views\Users\" />
+    <Folder Include="Areas\Admin\Views\Permission\" />
+    <Folder Include="Areas\Admin\Views\NewsCategory\" />
+    <Folder Include="Areas\Admin\Views\News\" />
     <Folder Include="Data\Configurations\" />
     <Folder Include="Models\DTOs\" />
   </ItemGroup>

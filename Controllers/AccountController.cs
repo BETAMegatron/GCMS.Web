@@ -12,6 +12,7 @@ using System.Security.Claims;
 
 namespace GCMS.Web.Controllers
 {
+    //[Authorize(Roles ="مدیریت سامانه")]
     public class AccountController : Controller
     {
         private readonly GCMSContext _context;
@@ -25,7 +26,7 @@ namespace GCMS.Web.Controllers
             _iwebHostEnvironment = iwebHostEnvironment;
             _saveprofileimage = SaveProfileImage;
         }
-
+        //ورود به حساب
         [HttpGet]
         public IActionResult Login()
         {
@@ -52,6 +53,7 @@ namespace GCMS.Web.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier,usr.UserID.ToString()),
                 new Claim(ClaimTypes.Name,usr.Username),
+                new Claim(ClaimTypes.Role, "مدیریت سامانه")
             };
             var Identity = new ClaimsIdentity(Claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var Princple = new ClaimsPrincipal(Identity);
@@ -110,11 +112,12 @@ namespace GCMS.Web.Controllers
         public  IActionResult Profile()
         {
             var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int userID = int.Parse(id);
+            
             if (!int.TryParse(id, out int idd))
             {
                 return RedirectToAction("Login", "Account");
             }
+            int userID = int.Parse(id);
             var usr = _context.Users.FirstOrDefault(u => u.UserID == userID);
             var uvm = new ProfileViewModel();
             uvm.UserID = usr.UserID;
