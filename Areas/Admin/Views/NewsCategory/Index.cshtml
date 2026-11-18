@@ -1,0 +1,823 @@
+﻿```cshtml
+@model IEnumerable<GCMS.Web.Areas.Admin.Models.ViewModel.NewsCategoryShowViewModel>
+
+@{
+    ViewData["Title"] = "مدیریت دسته‌بندی اخبار";
+
+    var categories = Model?.ToList()
+        ?? new List<GCMS.Web.Areas.Admin.Models.ViewModel.NewsCategoryShowViewModel>();
+}
+
+<style>
+    .category-page {
+        direction: rtl;
+        padding: 12px 0 35px;
+        font-family: inherit;
+        color: #1e293b;
+    }
+
+    /* Header */
+    .category-header {
+        background: linear-gradient(125deg, #172554 0%, #1e40af 55%, #2563eb 100%);
+        color: #fff;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 12px 30px rgba(30, 64, 175, .16);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+        .category-header h2 {
+            font-size: 23px;
+            font-weight: 800;
+            margin: 0 0 10px;
+        }
+
+        .category-header p {
+            color: rgba(255,255,255,.78);
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+    .btn-add-category {
+        background: #fff;
+        color: #1d4ed8;
+        border: 1px solid rgba(255,255,255,.5);
+        border-radius: 12px;
+        padding: 12px 19px;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        transition: all .2s ease;
+        box-shadow: 0 5px 14px rgba(15,23,42,.12);
+    }
+
+        .btn-add-category:hover {
+            background: #eff6ff;
+            color: #1e3a8a;
+            transform: translateY(-2px);
+        }
+
+        .btn-add-category i {
+            font-size: 17px;
+        }
+
+    /* Summary */
+    .category-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .summary-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 16px;
+        padding: 19px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 5px 18px rgba(15,23,42,.035);
+        transition: .2s;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 22px rgba(15,23,42,.07);
+        }
+
+    .summary-icon {
+        width: 49px;
+        height: 49px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .summary-card h3 {
+        font-size: 23px;
+        font-weight: 800;
+        color: #172554;
+        margin: 0 0 5px;
+    }
+
+    .summary-card span {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Table container */
+    .category-table-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 6px 22px rgba(15,23,42,.04);
+    }
+
+    .table-heading {
+        padding: 21px 24px;
+        border-bottom: 1px solid #edf1f7;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+        .table-heading h3 {
+            color: #172554;
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+            .table-heading h3 i {
+                color: #2563eb;
+                margin-left: 6px;
+            }
+
+        .table-heading span {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .category-table {
+        width: 100%;
+        min-width: 1050px;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+    }
+
+        .category-table thead {
+            background: #f8fafc;
+        }
+
+        .category-table th {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 17px 12px;
+            text-align: center;
+            white-space: nowrap;
+            border-bottom: 1px solid #e9eef5;
+        }
+
+        .category-table td {
+            color: #334155;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 16px 12px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .category-table tbody tr {
+            transition: background .2s;
+        }
+
+            .category-table tbody tr:hover {
+                background: #f8fbff;
+            }
+
+            .category-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    .category-image {
+        width: 58px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 11px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+
+    .category-title {
+        color: #172554;
+        font-weight: 800;
+        font-size: 13px;
+    }
+
+    .category-description {
+        max-width: 220px;
+        color: #64748b;
+        line-height: 1.9;
+        text-align: right !important;
+        font-weight: 500;
+    }
+
+    .news-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 31px;
+        padding: 0 10px;
+        border-radius: 9px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    /* Status */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 12px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .status-active {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .status-inactive {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        flex-wrap: nowrap;
+    }
+
+    .action-btn {
+        border: none;
+        border-radius: 9px;
+        padding: 9px 11px;
+        min-height: 35px;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all .2s ease;
+    }
+
+        .action-btn i {
+            font-size: 13px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn-edit {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+        .btn-edit:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+
+    .btn-activate {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+        .btn-activate:hover {
+            background: #16a34a;
+            color: #fff;
+        }
+
+    .btn-deactivate {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+        .btn-deactivate:hover {
+            background: #ea580c;
+            color: #fff;
+        }
+
+    .btn-delete {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+    /* Empty state */
+    .empty-state {
+        padding: 65px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 75px;
+        height: 75px;
+        margin: 0 auto 17px;
+        border-radius: 22px;
+        background: #f1f5f9;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+    }
+
+    .empty-state h4 {
+        color: #334155;
+        font-size: 17px;
+        font-weight: 800;
+        margin-bottom: 9px;
+    }
+
+    .empty-state p {
+        color: #94a3b8;
+        font-size: 13px;
+        margin: 0 0 20px;
+    }
+
+    /* Delete modal */
+    .delete-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        background: rgba(15, 23, 42, .62);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+        .delete-modal-backdrop.show {
+            display: flex;
+        }
+
+    .delete-modal {
+        width: 100%;
+        max-width: 420px;
+        background: #fff;
+        border-radius: 20px;
+        padding: 28px;
+        text-align: center;
+        box-shadow: 0 25px 70px rgba(0,0,0,.22);
+        animation: modalShow .22s ease;
+    }
+
+    @@keyframes modalShow {
+        from {
+            opacity: 0;
+            transform: translateY(12px) scale(.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .delete-modal-icon {
+        width: 66px;
+        height: 66px;
+        margin: 0 auto 17px;
+        border-radius: 20px;
+        background: #fee2e2;
+        color: #dc2626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 29px;
+    }
+
+    .delete-modal h3 {
+        color: #172554;
+        font-size: 19px;
+        font-weight: 900;
+        margin: 0 0 12px;
+    }
+
+    .delete-modal p {
+        color: #64748b;
+        font-size: 13px;
+        line-height: 2;
+        margin: 0 0 22px;
+    }
+
+    .delete-category-name {
+        display: block;
+        color: #b91c1c;
+        font-weight: 900;
+        margin-top: 5px;
+    }
+
+    .delete-modal-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .modal-btn {
+        min-width: 125px;
+        border: none;
+        border-radius: 10px;
+        padding: 11px 17px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    .modal-btn-cancel {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+        .modal-btn-cancel:hover {
+            background: #e2e8f0;
+        }
+
+    .modal-btn-delete {
+        background: #dc2626;
+        color: #fff;
+    }
+
+        .modal-btn-delete:hover {
+            background: #b91c1c;
+        }
+
+    @@media (max-width: 768px) {
+        .category-header {
+            padding: 22px;
+        }
+
+            .category-header h2 {
+                font-size: 19px;
+            }
+
+        .table-heading {
+            padding: 17px;
+        }
+
+        .delete-modal {
+            padding: 23px 18px;
+        }
+    }
+
+    @@media (max-width: 420px) {
+        .delete-modal-actions {
+            flex-direction: column-reverse;
+        }
+
+        .modal-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="category-page">
+
+    <!-- Header -->
+    <div class="category-header">
+        <div>
+            <h2>مدیریت دسته‌بندی اخبار</h2>
+            <p>در این بخش می‌توانید دسته‌بندی‌های اخبار سایت را مدیریت کنید.</p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="NewsCategory"
+           asp-action="Insert"
+           class="btn-add-category">
+            <i class="bi bi-plus-circle-fill"></i>
+            افزودن دسته‌بندی
+        </a>
+    </div>
+
+    <!-- Summary -->
+    <div class="category-summary">
+
+        <div class="summary-card">
+            <div class="summary-icon">
+                <i class="bi bi-collection-fill"></i>
+            </div>
+            <div>
+                <h3>@categories.Count</h3>
+                <span>تعداد کل دسته‌بندی‌ها</span>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon" style="background:#dcfce7;color:#16a34a;">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div>
+                <h3>@categories.Count(c => c.IsActive)</h3>
+                <span>دسته‌بندی‌های فعال</span>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon" style="background:#fef3c7;color:#d97706;">
+                <i class="bi bi-newspaper"></i>
+            </div>
+            <div>
+                <h3>@categories.Sum(c => c.NewsQuantitiy)</h3>
+                <span>مجموع اخبار دسته‌بندی‌ها</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Category table -->
+    <div class="category-table-card">
+
+        <div class="table-heading">
+            <h3>
+                <i class="bi bi-list-ul"></i>
+                فهرست دسته‌بندی‌ها
+            </h3>
+            <span>مدیریت و کنترل دسته‌بندی‌های ثبت‌شده</span>
+        </div>
+
+        @if (categories.Any())
+        {
+            <div class="table-responsive">
+                <table class="category-table">
+                    <thead>
+                        <tr>
+                            <th>تصویر</th>
+                            <th>عنوان دسته‌بندی</th>
+                            <th>توضیحات</th>
+                            <th>تعداد اخبار</th>
+                            <th>وضعیت</th>
+                            <th>تاریخ ایجاد</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var category in categories)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(category.NewsCategoryImageName))
+                                    {
+                                        <img src="~/Image/NewsCategory/@category.NewsCategoryImageName"
+                                             alt="@category.NewsCategoryTitle"
+                                             class="category-image"
+                                             onerror="this.style.display='none'" />
+                                    }
+                                    else
+                                    {
+                                        <div class="category-image d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-image text-secondary"></i>
+                                        </div>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="category-title">
+                                        @category.NewsCategoryTitle
+                                    </span>
+                                </td>
+
+                                <td class="category-description">
+                                    @(string.IsNullOrWhiteSpace(category.NewsCategoryDescription)
+                                        ? "توضیحاتی ثبت نشده است"
+                                        : category.NewsCategoryDescription)
+                                </td>
+
+                                <td>
+                                    <span class="news-count">
+                                        @category.NewsQuantitiy
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (category.IsActive)
+                                    {
+                                        <span class="status-badge status-active">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            فعال
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-inactive">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                            غیرفعال
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @category.NewsCategoryCreationDateToShamsi
+                                </td>
+
+                                <td>
+                                    <div class="action-buttons">
+
+                                        <!-- Edit -->
+                                        <a asp-area="Admin"
+                                           asp-controller="NewsCategory"
+                                           asp-action="Edit"
+                                           asp-route-id="@category.NewsCategoryID"
+                                           class="action-btn btn-edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                            ویرایش
+                                        </a>
+
+                                        <!-- Activate / Deactivate: no confirmation -->
+                                        @if (category.IsActive)
+                                        {
+                                            <form asp-area="Admin"
+                                                  asp-controller="NewsCategory"
+                                                  asp-action="DeactiveNewsCategory"
+                                                  asp-route-id="@category.NewsCategoryID"
+                                                  method="post">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <button type="submit" class="action-btn btn-deactivate">
+                                                    <i class="bi bi-pause-circle-fill"></i>
+                                                    غیرفعال
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-area="Admin"
+                                                  asp-controller="NewsCategory"
+                                                  asp-action="ActivateNewsCategory"
+                                                  asp-route-id="@category.NewsCategoryID"
+                                                  method="post">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <button type="submit" class="action-btn btn-activate">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    فعال
+                                                </button>
+                                            </form>
+                                        }
+
+                                        <!-- Delete: in-site confirmation modal -->
+                                        <button type="button"
+                                                class="action-btn btn-delete"
+                                                onclick="openDeleteModal('@category.NewsCategoryID', this)"
+                                                data-category-name="@category.NewsCategoryTitle"
+                                                data-delete-url="@Url.Action("DeleteNewsCategory", "NewsCategory", new { area = "Admin", id = category.NewsCategoryID })">
+                                            <i class="bi bi-trash3-fill"></i>
+                                            حذف
+                                        </button>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-folder-x"></i>
+                </div>
+
+                <h4>هنوز دسته‌بندی‌ای ثبت نشده است</h4>
+                <p>برای شروع، اولین دسته‌بندی اخبار را ایجاد کنید.</p>
+
+                <a asp-area="Admin"
+                   asp-controller="NewsCategory"
+                   asp-action="InsertNewCategory"
+                   class="btn-add-category">
+                    <i class="bi bi-plus-circle-fill"></i>
+                    افزودن اولین دسته‌بندی
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div class="delete-modal-backdrop"
+     id="deleteModal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="deleteModalTitle">
+
+    <div class="delete-modal">
+
+        <div class="delete-modal-icon">
+            <i class="bi bi-trash3-fill"></i>
+        </div>
+
+        <h3 id="deleteModalTitle">تأیید حذف دسته‌بندی</h3>
+
+        <p>
+            آیا از حذف این دسته‌بندی اطمینان دارید؟
+            <span class="delete-category-name" id="deleteCategoryName"></span>
+            <br />
+            این عملیات باعث حذف نرم دسته‌بندی خواهد شد.
+        </p>
+
+        <div class="delete-modal-actions">
+
+            <button type="button"
+                    class="modal-btn modal-btn-cancel"
+                    onclick="closeDeleteModal()">
+                انصراف
+            </button>
+
+            <form id="deleteCategoryForm" method="post">
+                @Html.AntiForgeryToken()
+
+                <button type="submit" class="modal-btn modal-btn-delete">
+                    <i class="bi bi-trash3"></i>
+                    بله، حذف شود
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const deleteModal = document.getElementById('deleteModal');
+    const deleteForm = document.getElementById('deleteCategoryForm');
+    const deleteCategoryName = document.getElementById('deleteCategoryName');
+
+    function openDeleteModal(id, button) {
+        const categoryName = button.getAttribute('data-category-name');
+        const deleteUrl = button.getAttribute('data-delete-url');
+
+        deleteCategoryName.textContent = categoryName;
+        deleteForm.action = deleteUrl;
+
+        deleteModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDeleteModal() {
+        deleteModal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    deleteModal.addEventListener('click', function(event) {
+        if (event.target === deleteModal) {
+            closeDeleteModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && deleteModal.classList.contains('show')) {
+            closeDeleteModal();
+        }
+    });
+</script>
+```

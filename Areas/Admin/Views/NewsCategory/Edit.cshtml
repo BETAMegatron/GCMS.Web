@@ -1,0 +1,251 @@
+﻿@model GCMS.Web.Models.ViewModels.News.NewsCategoryViewModel
+
+@{
+    ViewData["Title"] = "ویرایش دسته‌بندی خبر";
+}
+
+<div class="container-fluid py-4" dir="rtl">
+
+    <div class="mb-4">
+        <h3 class="fw-bold mb-1">ویرایش دسته‌بندی</h3>
+        <p class="text-muted mb-0">اطلاعات دسته‌بندی موردنظر را ویرایش کنید.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm form-card">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0">
+                <i class="bi bi-pencil-square text-primary ms-2"></i>
+                ویرایش اطلاعات دسته‌بندی
+            </h5>
+        </div>
+
+        <div class="card-body p-4">
+
+            <form asp-area="Admin"
+                  asp-controller="NewsCategory"
+                  asp-action="Edit"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <input asp-for="NewsCategoryID" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger"
+                     role="alert"></div>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+                        <label asp-for="NewsCategoryTitle"
+                               class="form-label fw-semibold">
+                            عنوان دسته‌بندی
+                        </label>
+
+                        <input asp-for="NewsCategoryTitle"
+                               class="form-control"
+                               placeholder="عنوان دسته‌بندی را وارد کنید" />
+
+                        <span asp-validation-for="NewsCategoryTitle"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            تصویر فعلی دسته‌بندی
+                        </label>
+
+                        @if (!string.IsNullOrEmpty(Model.NewsCategoryImageName))
+                        {
+                            <div class="current-image-wrapper">
+                                <img src="~/Image/NewsCategory/@Model.NewsCategoryImageName"
+                                     alt="@Model.NewsCategoryTitle"
+                                     class="current-image" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="no-image">
+                                <i class="bi bi-image"></i>
+                                <span>تصویری ثبت نشده است</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="NewsCategoryImage"
+                               class="form-label fw-semibold">
+                            انتخاب تصویر جدید
+                        </label>
+
+                        <input asp-for="NewsCategoryImage"
+                               type="file"
+                               class="form-control"
+                               accept="image/*" />
+
+                        <span asp-validation-for="NewsCategoryImage"
+                              class="text-danger small"></span>
+
+                        <small class="text-muted">
+                            در صورت انتخاب تصویر جدید، تصویر قبلی جایگزین خواهد شد.
+                        </small>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="NewsCategoryDescription"
+                               class="form-label fw-semibold">
+                            توضیحات دسته‌بندی
+                        </label>
+
+                        <textarea asp-for="NewsCategoryDescription"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="توضیحات دسته‌بندی..."></textarea>
+
+                        <span asp-validation-for="NewsCategoryDescription"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="status-box d-flex align-items-center justify-content-between">
+                            <div>
+                                <div class="fw-semibold">وضعیت دسته‌بندی</div>
+                                <small class="text-muted">
+                                    تعیین کنید دسته‌بندی در سایت فعال باشد یا خیر.
+                                </small>
+                            </div>
+
+                            <div class="form-check form-switch">
+                                <input asp-for="IsActive"
+                                       class="form-check-input"
+                                       type="checkbox"
+                                       role="switch" />
+                                <label asp-for="IsActive" class="form-check-label">
+                                    فعال
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            تعداد اخبار ثبت‌شده
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               value="@Model.NewsQuantitiy خبر"
+                               readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            تاریخ ایجاد
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               value="@Model.NewsCategoryCreationDate.ToString("yyyy/MM/dd")"
+                               readonly />
+                    </div>
+
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex flex-wrap gap-2 justify-content-end">
+
+                    <a asp-area="Admin"
+                       asp-controller="NewsCategory"
+                       asp-action="Index"
+                       class="btn btn-light px-4">
+                        انصراف
+                    </a>
+
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-lg ms-1"></i>
+                        ذخیره تغییرات
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-card {
+        border-radius: 14px;
+        max-width: 1050px;
+    }
+
+    .form-control {
+        min-height: 45px;
+        border-radius: 8px;
+    }
+
+    textarea.form-control {
+        min-height: 130px;
+    }
+
+    .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .12);
+    }
+
+    .current-image-wrapper {
+        height: 120px;
+        display: flex;
+        align-items: center;
+    }
+
+    .current-image {
+        width: 150px;
+        height: 105px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+    }
+
+    .no-image {
+        height: 105px;
+        width: 150px;
+        border-radius: 10px;
+        background: #f1f3f5;
+        color: #adb5bd;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+        .no-image i {
+            font-size: 25px;
+        }
+
+        .no-image span {
+            font-size: 12px;
+        }
+
+    .status-box {
+        background: #f8f9fa;
+        padding: 18px;
+        border-radius: 10px;
+    }
+
+    .form-check-input {
+        width: 42px;
+        height: 22px;
+        cursor: pointer;
+    }
+
+    .form-check-label {
+        margin-right: 8px;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

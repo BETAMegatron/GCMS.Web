@@ -2,6 +2,8 @@ using GCMS.Web.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using GCMS.Web.Utilities;
+using GCMS.Web.Areas.Admin.Services.Interface;
+using GCMS.Web.Areas.Admin.Services.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +13,13 @@ builder.Services.AddDbContext<GCMSContext>(op => op.UseSqlServer(builder.Configu
 //Authentication Login Service
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(op => op.LoginPath = "/Account/Login");
 
-builder.Services.AddScoped<SaveProfileImage>();
 
+//DI:
+builder.Services.AddScoped<SaveProfileImage>();
+builder.Services.AddScoped<PersianDate>();
+builder.Services.AddScoped<INewsCategoryRepository, NewsCategoryRepository>();
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------
 var app = builder.Build();
 
 
