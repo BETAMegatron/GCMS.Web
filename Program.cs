@@ -17,6 +17,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 //DI:
 builder.Services.AddScoped<PersianDate>();
 builder.Services.AddScoped<INewsCategoryRepository, NewsCategoryRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 var app = builder.Build();
