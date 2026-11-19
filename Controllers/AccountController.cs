@@ -18,13 +18,11 @@ namespace GCMS.Web.Controllers
         private readonly GCMSContext _context;
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
         private readonly IWebHostEnvironment _iwebHostEnvironment;
-        private readonly SaveProfileImage _saveprofileimage;
 
-        public AccountController(GCMSContext GCMSContext, IWebHostEnvironment iwebHostEnvironment , SaveProfileImage SaveProfileImage)
+        public AccountController(GCMSContext GCMSContext, IWebHostEnvironment iwebHostEnvironment)
         {
             _context = GCMSContext;
             _iwebHostEnvironment = iwebHostEnvironment;
-            _saveprofileimage = SaveProfileImage;
         }
         //ورود به حساب
         [HttpGet]
@@ -159,7 +157,14 @@ namespace GCMS.Web.Controllers
 
             if(user.UserProfileImageName != null && user.UserProfileImageName.Length > 0)
             {
-                usr.UserProfileImageName = await _saveprofileimage.SaveProfileImages(user.UserProfileImage);
+                var filename = Guid.NewGuid().ToString() + Path.GetExtension(user.UserProfileImage.FileName);
+                var path = Path.Combine(_iwebHostEnvironment.WebRootPath, "Image", "Profile", filename);
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    user.UserProfileImage.CopyToAsync(stream);
+                }
+                user.UserProfileImageName = filename;
             }
 
             await _context.SaveChangesAsync();

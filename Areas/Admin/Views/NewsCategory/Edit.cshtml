@@ -1,251 +1,757 @@
-﻿@model GCMS.Web.Models.ViewModels.News.NewsCategoryViewModel
+﻿@model GCMS.Web.Areas.Admin.Models.ViewModel.NewsCategoryEditViewModel
 
-@{
-    ViewData["Title"] = "ویرایش دسته‌بندی خبر";
-}
+<div id="editCategoryModal" class="edit-modal">
+    <div class="edit-modal-backdrop"></div>
 
-<div class="container-fluid py-4" dir="rtl">
+    <div class="edit-modal-dialog">
+        <div class="edit-modal-content">
 
-    <div class="mb-4">
-        <h3 class="fw-bold mb-1">ویرایش دسته‌بندی</h3>
-        <p class="text-muted mb-0">اطلاعات دسته‌بندی موردنظر را ویرایش کنید.</p>
-    </div>
+            <div class="edit-modal-header">
+                <div class="edit-header-icon">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
 
-    <div class="card border-0 shadow-sm form-card">
+                <div class="edit-header-text">
+                    <h5>ویرایش دسته‌بندی</h5>
+                    <p>اطلاعات و تصویر دسته‌بندی موردنظر را به‌روزرسانی کنید.</p>
+                </div>
 
-        <div class="card-header bg-white py-3">
-            <h5 class="fw-bold mb-0">
-                <i class="bi bi-pencil-square text-primary ms-2"></i>
-                ویرایش اطلاعات دسته‌بندی
-            </h5>
-        </div>
-
-        <div class="card-body p-4">
+                <button type="button" class="edit-modal-close" id="closeEditModal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
 
             <form asp-area="Admin"
                   asp-controller="NewsCategory"
-                  asp-action="Edit"
+                  asp-action="EditeNewsCategory"
                   method="post"
-                  enctype="multipart/form-data">
+                  enctype="multipart/form-data"
+                  id="editCategoryForm">
 
-                <input asp-for="NewsCategoryID" type="hidden" />
+                <div class="edit-modal-body">
+                    <input type="hidden" asp-for="NewsCategoryID" id="editCategoryId" />
+                    <input type="hidden" name="id" id="editCategoryRouteId" />
 
-                <div asp-validation-summary="ModelOnly"
-                     class="alert alert-danger"
-                     role="alert"></div>
+                    <div asp-validation-summary="ModelOnly" class="edit-validation-summary"></div>
 
-                <div class="row g-4">
-
-                    <div class="col-md-6">
-                        <label asp-for="NewsCategoryTitle"
-                               class="form-label fw-semibold">
-                            عنوان دسته‌بندی
-                        </label>
-
-                        <input asp-for="NewsCategoryTitle"
-                               class="form-control"
-                               placeholder="عنوان دسته‌بندی را وارد کنید" />
-
-                        <span asp-validation-for="NewsCategoryTitle"
-                              class="text-danger small"></span>
+                    <div class="edit-section-title">
+                        <i class="bi bi-info-circle"></i>
+                        اطلاعات دسته‌بندی
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            تصویر فعلی دسته‌بندی
-                        </label>
+                    <div class="row g-3">
+                        <div class="col-md-7">
+                            <label asp-for="NewsCategoryTitle" class="edit-label">
+                                عنوان دسته‌بندی
+                                <span>*</span>
+                            </label>
 
-                        @if (!string.IsNullOrEmpty(Model.NewsCategoryImageName))
-                        {
-                            <div class="current-image-wrapper">
-                                <img src="~/Image/NewsCategory/@Model.NewsCategoryImageName"
-                                     alt="@Model.NewsCategoryTitle"
-                                     class="current-image" />
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="no-image">
-                                <i class="bi bi-image"></i>
-                                <span>تصویری ثبت نشده است</span>
-                            </div>
-                        }
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="NewsCategoryImage"
-                               class="form-label fw-semibold">
-                            انتخاب تصویر جدید
-                        </label>
-
-                        <input asp-for="NewsCategoryImage"
-                               type="file"
-                               class="form-control"
-                               accept="image/*" />
-
-                        <span asp-validation-for="NewsCategoryImage"
-                              class="text-danger small"></span>
-
-                        <small class="text-muted">
-                            در صورت انتخاب تصویر جدید، تصویر قبلی جایگزین خواهد شد.
-                        </small>
-                    </div>
-
-                    <div class="col-12">
-                        <label asp-for="NewsCategoryDescription"
-                               class="form-label fw-semibold">
-                            توضیحات دسته‌بندی
-                        </label>
-
-                        <textarea asp-for="NewsCategoryDescription"
-                                  class="form-control"
-                                  rows="5"
-                                  placeholder="توضیحات دسته‌بندی..."></textarea>
-
-                        <span asp-validation-for="NewsCategoryDescription"
-                              class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="status-box d-flex align-items-center justify-content-between">
-                            <div>
-                                <div class="fw-semibold">وضعیت دسته‌بندی</div>
-                                <small class="text-muted">
-                                    تعیین کنید دسته‌بندی در سایت فعال باشد یا خیر.
-                                </small>
+                            <div class="edit-input-wrap">
+                                <i class="bi bi-tag"></i>
+                                <input asp-for="NewsCategoryTitle"
+                                       id="editCategoryTitle"
+                                       class="form-control edit-input"
+                                       placeholder="مثلاً فناوری و تکنولوژی" />
                             </div>
 
-                            <div class="form-check form-switch">
+                            <span asp-validation-for="NewsCategoryTitle" class="edit-field-error"></span>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="edit-label">وضعیت دسته‌بندی</label>
+
+                            <label class="edit-switch-box" for="editCategoryActive">
+                                <span class="edit-switch-text">
+                                    <strong id="editStatusTitle">دسته‌بندی فعال</strong>
+                                    <small id="editStatusDescription">این دسته‌بندی در سایت نمایش داده می‌شود.</small>
+                                </span>
+
                                 <input asp-for="IsActive"
-                                       class="form-check-input"
+                                       id="editCategoryActive"
                                        type="checkbox"
-                                       role="switch" />
-                                <label asp-for="IsActive" class="form-check-label">
-                                    فعال
-                                </label>
+                                       class="edit-switch-input" />
+
+                                <span class="edit-switch"></span>
+                            </label>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="NewsCategoryDescription" class="edit-label">
+                                توضیحات دسته‌بندی
+                            </label>
+
+                            <div class="edit-input-wrap edit-textarea-wrap">
+                                <i class="bi bi-card-text"></i>
+                                <textarea asp-for="NewsCategoryDescription"
+                                          id="editCategoryDescription"
+                                          class="form-control edit-input"
+                                          rows="3"
+                                          placeholder="توضیح کوتاهی درباره این دسته‌بندی بنویسید..."></textarea>
                             </div>
+
+                            <span asp-validation-for="NewsCategoryDescription" class="edit-field-error"></span>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            تعداد اخبار ثبت‌شده
-                        </label>
-
-                        <input type="text"
-                               class="form-control"
-                               value="@Model.NewsQuantitiy خبر"
-                               readonly />
+                    <div class="edit-section-title edit-image-section-title">
+                        <i class="bi bi-images"></i>
+                        تصویر دسته‌بندی
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            تاریخ ایجاد
-                        </label>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="edit-image-card">
+                                <div class="edit-image-card-heading">
+                                    <span>تصویر فعلی</span>
+                                    <span class="edit-image-tag">ثبت‌شده</span>
+                                </div>
 
-                        <input type="text"
-                               class="form-control"
-                               value="@Model.NewsCategoryCreationDate.ToString("yyyy/MM/dd")"
-                               readonly />
+                                <div class="edit-image-preview">
+                                    <img id="currentCategoryImage"
+                                         src=""
+                                         alt="تصویر فعلی"
+                                         class="edit-preview-image d-none" />
+
+                                    <div id="noCurrentImage" class="edit-no-image">
+                                        <i class="bi bi-image"></i>
+                                        <span>تصویری ثبت نشده است</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="edit-image-card">
+                                <div class="edit-image-card-heading">
+                                    <span>تصویر جدید</span>
+                                    <span class="edit-image-tag edit-image-tag-new">انتخابی</span>
+                                </div>
+
+                                <label for="editCategoryImage" class="edit-upload-area">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                    <strong>برای انتخاب تصویر کلیک کنید</strong>
+                                    <small>فرمت‌های تصویری مانند JPG، PNG و WEBP</small>
+                                </label>
+
+                                <input asp-for="NewsCategoryImage"
+                                       id="editCategoryImage"
+                                       type="file"
+                                       accept="image/*"
+                                       class="d-none" />
+
+                                <div class="edit-image-preview edit-new-preview">
+                                    <img id="newCategoryImagePreview"
+                                         src=""
+                                         alt="پیش‌نمایش تصویر جدید"
+                                         class="edit-preview-image d-none" />
+
+                                    <div id="newImagePlaceholder" class="edit-no-image">
+                                        <i class="bi bi-eye"></i>
+                                        <span>پیش‌نمایش تصویر جدید</span>
+                                    </div>
+                                </div>
+
+                                <span id="editImageError" class="edit-field-error"></span>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
 
-                <hr class="my-4" />
-
-                <div class="d-flex flex-wrap gap-2 justify-content-end">
-
-                    <a asp-area="Admin"
-                       asp-controller="NewsCategory"
-                       asp-action="Index"
-                       class="btn btn-light px-4">
+                <div class="edit-modal-footer">
+                    <button type="button" class="edit-cancel-btn" id="cancelEditModal">
+                        <i class="bi bi-x-circle"></i>
                         انصراف
-                    </a>
-
-                    <button type="submit" class="btn btn-primary px-4">
-                        <i class="bi bi-check-lg ms-1"></i>
-                        ذخیره تغییرات
                     </button>
 
+                    <button type="submit" class="edit-save-btn" id="saveCategoryButton">
+                        <i class="bi bi-check2-circle"></i>
+                        ذخیره تغییرات
+                    </button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
 <style>
-    .form-card {
-        border-radius: 14px;
-        max-width: 1050px;
+    .edit-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        direction: rtl;
     }
 
-    .form-control {
+        .edit-modal.show {
+            display: flex;
+        }
+
+    .edit-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(10, 20, 40, .72);
+        backdrop-filter: blur(6px);
+    }
+
+    .edit-modal-dialog {
+        position: relative;
+        width: 100%;
+        max-width: 850px;
+        max-height: 92vh;
+        overflow-y: auto;
+        animation: editModalOpen .25s ease;
+        scrollbar-width: thin;
+    }
+
+    .edit-modal-content {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, .25);
+    }
+
+    .edit-modal-header {
+        background: linear-gradient(125deg, #172554, #1e40af 65%, #2563eb);
+        color: #fff;
+        padding: 23px 27px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .edit-header-icon {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        border-radius: 15px;
+        background: rgba(255,255,255,.16);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+    }
+
+    .edit-header-text {
+        flex: 1;
+    }
+
+        .edit-header-text h5 {
+            font-size: 18px;
+            font-weight: 900;
+            margin: 0 0 6px;
+        }
+
+        .edit-header-text p {
+            font-size: 12px;
+            color: rgba(255,255,255,.75);
+            margin: 0;
+        }
+
+    .edit-modal-close {
+        width: 38px;
+        height: 38px;
+        border: 1px solid rgba(255,255,255,.2);
+        border-radius: 11px;
+        background: rgba(255,255,255,.12);
+        color: #fff;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .edit-modal-close:hover {
+            background: #fff;
+            color: #1e40af;
+            transform: rotate(90deg);
+        }
+
+    .edit-modal-body {
+        padding: 26px 28px;
+    }
+
+    .edit-section-title {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #172554;
+        font-size: 14px;
+        font-weight: 900;
+        padding-bottom: 13px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid #edf1f7;
+    }
+
+        .edit-section-title i {
+            color: #2563eb;
+            font-size: 17px;
+        }
+
+    .edit-image-section-title {
+        margin-top: 28px;
+    }
+
+    .edit-label {
+        display: block;
+        color: #334155;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 9px;
+    }
+
+        .edit-label span {
+            color: #dc2626;
+        }
+
+    .edit-input-wrap {
+        position: relative;
+    }
+
+        .edit-input-wrap > i {
+            position: absolute;
+            right: 14px;
+            top: 13px;
+            color: #94a3b8;
+            font-size: 16px;
+            z-index: 1;
+        }
+
+    .edit-input {
+        width: 100%;
         min-height: 45px;
+        border: 1px solid #dce4ef;
+        border-radius: 11px;
+        background: #fbfcfe;
+        color: #1e293b;
+        font-family: inherit;
+        font-size: 12px;
+        padding: 11px 42px 11px 13px;
+        transition: .2s;
+        box-shadow: none !important;
+    }
+
+        .edit-input:focus {
+            border-color: #3b82f6;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.11) !important;
+        }
+
+    .edit-textarea-wrap > i {
+        top: 13px;
+    }
+
+    .edit-textarea-wrap textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .edit-switch-box {
+        min-height: 45px;
+        border: 1px solid #dce4ef;
+        border-radius: 11px;
+        background: #fbfcfe;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        cursor: pointer;
+    }
+
+    .edit-switch-text {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+        .edit-switch-text strong {
+            font-size: 12px;
+            color: #334155;
+        }
+
+        .edit-switch-text small {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+    .edit-switch-input {
+        display: none;
+    }
+
+    .edit-switch {
+        width: 40px;
+        height: 22px;
+        border-radius: 20px;
+        background: #cbd5e1;
+        position: relative;
+        flex-shrink: 0;
+        transition: .2s;
+    }
+
+        .edit-switch::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            transition: .2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,.2);
+        }
+
+    .edit-switch-input:checked + .edit-switch {
+        background: #16a34a;
+    }
+
+        .edit-switch-input:checked + .edit-switch::after {
+            right: 21px;
+        }
+
+    .edit-image-card {
+        height: 100%;
+        padding: 14px;
+        border: 1px solid #e7edf5;
+        border-radius: 14px;
+        background: #fbfcfe;
+    }
+
+    .edit-image-card-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        color: #334155;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .edit-image-tag {
+        background: #eff6ff;
+        color: #2563eb;
+        border-radius: 20px;
+        padding: 5px 9px;
+        font-size: 10px;
+    }
+
+    .edit-image-tag-new {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .edit-image-preview {
+        min-height: 145px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 11px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .edit-preview-image {
+        width: 100%;
+        height: 125px;
+        object-fit: contain;
         border-radius: 8px;
     }
 
-    textarea.form-control {
-        min-height: 130px;
-    }
-
-    .form-control:focus {
-        border-color: #86b7fe;
-        box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .12);
-    }
-
-    .current-image-wrapper {
-        height: 120px;
+    .edit-no-image {
         display: flex;
+        flex-direction: column;
         align-items: center;
+        gap: 8px;
+        color: #94a3b8;
+        font-size: 11px;
     }
 
-    .current-image {
-        width: 150px;
-        height: 105px;
-        object-fit: cover;
-        border-radius: 10px;
-        border: 1px solid #dee2e6;
-    }
+        .edit-no-image i {
+            font-size: 30px;
+            color: #cbd5e1;
+        }
 
-    .no-image {
-        height: 105px;
-        width: 150px;
-        border-radius: 10px;
-        background: #f1f3f5;
-        color: #adb5bd;
+    .edit-upload-area {
+        min-height: 95px;
+        border: 1px dashed #93c5fd;
+        border-radius: 11px;
+        background: #eff6ff;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 5px;
-    }
-
-        .no-image i {
-            font-size: 25px;
-        }
-
-        .no-image span {
-            font-size: 12px;
-        }
-
-    .status-box {
-        background: #f8f9fa;
-        padding: 18px;
-        border-radius: 10px;
-    }
-
-    .form-check-input {
-        width: 42px;
-        height: 22px;
+        color: #2563eb;
         cursor: pointer;
+        transition: .2s;
+        margin-bottom: 10px;
     }
 
-    .form-check-label {
-        margin-right: 8px;
+        .edit-upload-area:hover {
+            background: #dbeafe;
+            border-color: #2563eb;
+        }
+
+        .edit-upload-area i {
+            font-size: 23px;
+        }
+
+        .edit-upload-area strong {
+            font-size: 11px;
+        }
+
+        .edit-upload-area small {
+            color: #64748b;
+            font-size: 10px;
+        }
+
+    .edit-new-preview {
+        min-height: 115px;
+    }
+
+        .edit-new-preview .edit-preview-image {
+            height: 95px;
+        }
+
+    .edit-field-error {
+        display: block;
+        color: #dc2626;
+        font-size: 11px;
+        margin-top: 6px;
+    }
+
+    .edit-validation-summary {
+        color: #dc2626;
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+
+    .edit-modal-footer {
+        padding: 17px 28px;
+        background: #f8fafc;
+        border-top: 1px solid #edf1f7;
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+
+    .edit-cancel-btn,
+    .edit-save-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 11px 19px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: .2s;
+    }
+
+    .edit-cancel-btn {
+        background: #e2e8f0;
+        color: #475569;
+    }
+
+        .edit-cancel-btn:hover {
+            background: #cbd5e1;
+        }
+
+    .edit-save-btn {
+        background: linear-gradient(120deg, #2563eb, #1d4ed8);
+        color: #fff;
+        box-shadow: 0 5px 13px rgba(37,99,235,.2);
+    }
+
+        .edit-save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(37,99,235,.28);
+        }
+
+    body.edit-modal-open {
+        overflow: hidden;
+    }
+
+    @@keyframes editModalOpen {
+        from {
+            opacity: 0;
+            transform: translateY(15px) scale(.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @@media(max-width: 600px) {
+        .edit-modal {
+            padding: 8px;
+        }
+
+        .edit-modal-header {
+            padding: 17px;
+        }
+
+        .edit-header-icon {
+            width: 43px;
+            height: 43px;
+        }
+
+        .edit-modal-body {
+            padding: 19px 16px;
+        }
+
+        .edit-modal-footer {
+            padding: 14px 16px;
+        }
+
+        .edit-cancel-btn,
+        .edit-save-btn {
+            flex: 1;
+            justify-content: center;
+            padding: 11px 8px;
+        }
     }
 </style>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+<script>
+    (() => {
+        const modal = document.getElementById('editCategoryModal');
+        if (!modal) return;
+
+        const form = document.getElementById('editCategoryForm');
+        const currentImage = document.getElementById('currentCategoryImage');
+        const noCurrentImage = document.getElementById('noCurrentImage');
+        const imageInput = document.getElementById('editCategoryImage');
+        const newImagePreview = document.getElementById('newCategoryImagePreview');
+        const newImagePlaceholder = document.getElementById('newImagePlaceholder');
+        const activeInput = document.getElementById('editCategoryActive');
+
+        let temporaryImageUrl = null;
+
+        function clearNewImagePreview() {
+            if (temporaryImageUrl) {
+                URL.revokeObjectURL(temporaryImageUrl);
+                temporaryImageUrl = null;
+            }
+
+            newImagePreview.src = '';
+            newImagePreview.classList.add('d-none');
+            newImagePlaceholder.style.display = 'flex';
+        }
+
+        function openModal(button) {
+            const id = button.dataset.id;
+            const imageUrl = button.dataset.imageUrl || '';
+
+            document.getElementById('editCategoryId').value = id;
+            document.getElementById('editCategoryRouteId').value = id;
+            document.getElementById('editCategoryTitle').value = button.dataset.title || '';
+            document.getElementById('editCategoryDescription').value = button.dataset.description || '';
+            activeInput.checked = button.dataset.active === 'true';
+
+            imageInput.value = '';
+            clearNewImagePreview();
+            document.getElementById('editImageError').textContent = '';
+
+            if (imageUrl) {
+                currentImage.onerror = function() {
+                    currentImage.classList.add('d-none');
+                    noCurrentImage.style.display = 'flex';
+                };
+
+                currentImage.onload = function() {
+                    currentImage.classList.remove('d-none');
+                    noCurrentImage.style.display = 'none';
+                };
+
+                currentImage.src = imageUrl;
+            } else {
+                currentImage.removeAttribute('src');
+                currentImage.classList.add('d-none');
+                noCurrentImage.style.display = 'flex';
+            }
+
+            updateStatusText();
+            modal.classList.add('show');
+            document.body.classList.add('edit-modal-open');
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+            document.body.classList.remove('edit-modal-open');
+            clearNewImagePreview();
+        }
+
+        function updateStatusText() {
+            const title = document.getElementById('editStatusTitle');
+            const description = document.getElementById('editStatusDescription');
+
+            if (activeInput.checked) {
+                title.textContent = 'دسته‌بندی فعال';
+                description.textContent = 'این دسته‌بندی در سایت نمایش داده می‌شود.';
+            } else {
+                title.textContent = 'دسته‌بندی غیرفعال';
+                description.textContent = 'این دسته‌بندی در سایت نمایش داده نمی‌شود.';
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            const button = event.target.closest('.edit-category-btn');
+            if (button) openModal(button);
+        });
+
+        activeInput.addEventListener('change', updateStatusText);
+
+        imageInput.addEventListener('change', function() {
+            clearNewImagePreview();
+
+            const file = this.files[0];
+            const error = document.getElementById('editImageError');
+            error.textContent = '';
+
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                error.textContent = 'لطفاً یک فایل تصویری انتخاب کنید.';
+                this.value = '';
+                return;
+            }
+
+            temporaryImageUrl = URL.createObjectURL(file);
+            newImagePreview.src = temporaryImageUrl;
+            newImagePreview.classList.remove('d-none');
+            newImagePlaceholder.style.display = 'none';
+        });
+
+        document.getElementById('closeEditModal').addEventListener('click', closeModal);
+        document.getElementById('cancelEditModal').addEventListener('click', closeModal);
+        modal.querySelector('.edit-modal-backdrop').addEventListener('click', closeModal);
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.classList.contains('show')) {
+                closeModal();
+            }
+        });
+
+        form.addEventListener('submit', function(event) {
+            const title = document.getElementById('editCategoryTitle').value.trim();
+
+            if (!title) {
+                event.preventDefault();
+                document.getElementById('editCategoryTitle').focus();
+                return;
+            }
+
+            if (imageInput.files.length && !imageInput.files[0].type.startsWith('image/')) {
+                event.preventDefault();
+                document.getElementById('editImageError').textContent = 'فایل انتخاب‌شده تصویر نیست.';
+            }
+        });
+    })();
+</script>

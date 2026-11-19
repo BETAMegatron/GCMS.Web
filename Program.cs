@@ -15,7 +15,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 
 //DI:
-builder.Services.AddScoped<SaveProfileImage>();
 builder.Services.AddScoped<PersianDate>();
 builder.Services.AddScoped<INewsCategoryRepository, NewsCategoryRepository>();
 

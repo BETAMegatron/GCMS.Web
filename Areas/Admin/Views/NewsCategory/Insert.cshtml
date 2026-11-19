@@ -1,165 +1,750 @@
-﻿@model GCMS.Web.Models.ViewModels.News.NewsCategoryViewModel
+﻿@model GCMS.Web.Areas.Admin.Models.ViewModel.NewCategoryInsertViewModel
 
 @{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "افزودن دسته‌بندی خبر";
 }
 
-<div class="container-fluid py-4" dir="rtl">
-
-    <div class="mb-4">
-        <h3 class="fw-bold mb-1">افزودن دسته‌بندی جدید</h3>
-        <p class="text-muted mb-0">اطلاعات دسته‌بندی خبری جدید را وارد کنید.</p>
-    </div>
-
-    <div class="card border-0 shadow-sm form-card">
-        <div class="card-header bg-white py-3">
-            <h5 class="fw-bold mb-0">
-                <i class="bi bi-folder-plus text-primary ms-2"></i>
-                اطلاعات دسته‌بندی
-            </h5>
-        </div>
-
-        <div class="card-body p-4">
-
-            <form asp-area="Admin"
-                  asp-controller="NewsCategory"
-                  asp-action="Insert"
-                  method="post"
-                  enctype="multipart/form-data">
-
-                <div asp-validation-summary="ModelOnly"
-                     class="alert alert-danger"
-                     role="alert"></div>
-
-                <div class="row g-4">
-
-                    <div class="col-md-6">
-                        <label asp-for="NewsCategoryTitle" class="form-label fw-semibold">
-                            عنوان دسته‌بندی
-                        </label>
-
-                        <input asp-for="NewsCategoryTitle"
-                               class="form-control"
-                               placeholder="مثلاً فناوری، بازی‌های ویدیویی..." />
-
-                        <span asp-validation-for="NewsCategoryTitle"
-                              class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            تصویر دسته‌بندی
-                        </label>
-
-                        <input asp-for="NewsCategoryImage"
-                               type="file"
-                               class="form-control"
-                               accept="image/*" />
-
-                        <span asp-validation-for="NewsCategoryImage"
-                              class="text-danger small"></span>
-
-                        <small class="text-muted">
-                            تصویر مناسب با فرمت JPG، PNG یا WEBP انتخاب کنید.
-                        </small>
-                    </div>
-
-                    <div class="col-12">
-                        <label asp-for="NewsCategoryDescription"
-                               class="form-label fw-semibold">
-                            توضیحات دسته‌بندی
-                        </label>
-
-                        <textarea asp-for="NewsCategoryDescription"
-                                  class="form-control"
-                                  rows="5"
-                                  placeholder="توضیح کوتاهی درباره این دسته‌بندی بنویسید..."></textarea>
-
-                        <span asp-validation-for="NewsCategoryDescription"
-                              class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="status-box d-flex align-items-center justify-content-between">
-                            <div>
-                                <div class="fw-semibold">وضعیت دسته‌بندی</div>
-                                <small class="text-muted">
-                                    با غیرفعال کردن، دسته‌بندی در بخش عمومی سایت نمایش داده نمی‌شود.
-                                </small>
-                            </div>
-
-                            <div class="form-check form-switch">
-                                <input asp-for="IsActive"
-                                       class="form-check-input"
-                                       type="checkbox"
-                                       role="switch" />
-                                <label asp-for="IsActive" class="form-check-label">
-                                    فعال
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <hr class="my-4" />
-
-                <div class="d-flex flex-wrap gap-2 justify-content-end">
-                    <a asp-area="Admin"
-                       asp-controller="NewsCategory"
-                       asp-action="Index"
-                       class="btn btn-light px-4">
-                        انصراف
-                    </a>
-
-                    <button type="submit" class="btn btn-primary px-4">
-                        <i class="bi bi-check-lg ms-1"></i>
-                        ثبت دسته‌بندی
-                    </button>
-                </div>
-
-            </form>
-        </div>
-    </div>
-</div>
-
 <style>
-    .form-card {
-        border-radius: 14px;
-        max-width: 1050px;
+    .insert-page {
+        direction: rtl;
+        padding: 12px 0 35px;
+        color: #1e293b;
+        font-family: inherit;
     }
 
-    .form-control {
-        min-height: 45px;
+    .insert-header {
+        background: linear-gradient(125deg, #172554 0%, #1e40af 55%, #2563eb 100%);
+        color: #fff;
+        border-radius: 20px;
+        padding: 28px 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 12px 30px rgba(30, 64, 175, .16);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+        .insert-header h2 {
+            font-size: 23px;
+            font-weight: 800;
+            margin: 0 0 9px;
+        }
+
+        .insert-header p {
+            color: rgba(255,255,255,.78);
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+    .btn-back {
+        background: rgba(255,255,255,.13);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,.3);
+        border-radius: 11px;
+        padding: 11px 18px;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: .2s;
+    }
+
+        .btn-back:hover {
+            background: #fff;
+            color: #1e40af;
+            transform: translateY(-2px);
+        }
+
+    .insert-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 6px 22px rgba(15,23,42,.04);
+    }
+
+    .insert-card-header {
+        padding: 21px 25px;
+        border-bottom: 1px solid #edf1f7;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .insert-card-header-icon {
+        width: 43px;
+        height: 43px;
+        border-radius: 12px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .insert-card-header h3 {
+        color: #172554;
+        font-size: 16px;
+        font-weight: 800;
+        margin: 0 0 5px;
+    }
+
+    .insert-card-header span {
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .insert-card-body {
+        padding: 28px;
+    }
+
+    .insert-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 25px 22px;
+    }
+
+    .form-group {
+        min-width: 0;
+    }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+    .field-label {
+        display: block;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .required-mark {
+        color: #ef4444;
+        margin-right: 3px;
+    }
+
+    .field-input {
+        display: block;
+        width: 100%;
+        min-height: 47px;
+        padding: 11px 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background: #f8fafc;
+        color: #334155;
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+        transition: .2s;
+        box-sizing: border-box;
+    }
+
+        .field-input::placeholder {
+            color: #a0aec0;
+        }
+
+        .field-input:focus {
+            background: #fff;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 4px rgba(37,99,235,.08);
+        }
+
+    textarea.field-input {
+        min-height: 135px;
+        resize: vertical;
+        line-height: 2;
+    }
+
+    .image-upload-box {
+        position: relative;
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        background: #f8fafc;
+        min-height: 145px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .image-upload-box:hover {
+            background: #eff6ff;
+            border-color: #60a5fa;
+        }
+
+        .image-upload-box.has-file {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .image-upload-box input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+    .upload-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 13px;
+        background: #e0ecff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+        margin-bottom: 10px;
+    }
+
+    .upload-title {
+        color: #334155;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .upload-description {
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .selected-file {
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 800;
+        margin-top: 8px;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .image-preview {
+        display: none;
+        max-width: 100%;
+        max-height: 110px;
+        object-fit: contain;
         border-radius: 8px;
-    }
-
-    textarea.form-control {
-        min-height: 130px;
-    }
-
-    .form-control:focus {
-        border-color: #86b7fe;
-        box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .12);
+        margin-top: 12px;
     }
 
     .status-box {
-        background: #f8f9fa;
-        padding: 18px;
-        border-radius: 10px;
+        background: #f8fafc;
+        border: 1px solid #e8edf5;
+        border-radius: 13px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        flex-wrap: wrap;
     }
 
-    .form-check-input {
-        width: 42px;
-        height: 22px;
+    .status-info {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
+
+    .status-icon {
+        width: 43px;
+        height: 43px;
+        border-radius: 12px;
+        background: #dcfce7;
+        color: #16a34a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .status-title {
+        color: #334155;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .status-description {
+        color: #94a3b8;
+        font-size: 11px;
+        line-height: 1.9;
+    }
+
+    .status-switch {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         cursor: pointer;
+        margin: 0;
     }
 
-    .form-check-label {
-        margin-right: 8px;
+        .status-switch input {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 45px;
+            height: 24px;
+            background: #cbd5e1;
+            border-radius: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: .2s;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+            .status-switch input::before {
+                content: "";
+                position: absolute;
+                width: 18px;
+                height: 18px;
+                background: #fff;
+                border-radius: 50%;
+                top: 3px;
+                right: 3px;
+                transition: .2s;
+                box-shadow: 0 1px 3px rgba(0,0,0,.15);
+            }
+
+            .status-switch input:checked {
+                background: #16a34a;
+            }
+
+                .status-switch input:checked::before {
+                    right: 24px;
+                }
+
+        .status-switch span {
+            color: #334155;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+    .validation-summary {
+        border-radius: 10px;
+        font-size: 12px;
+        line-height: 2;
+        margin-bottom: 24px;
+    }
+
+        .validation-summary:empty,
+        .validation-summary.validation-summary-valid {
+            display: none;
+        }
+
+    .field-validation-error {
+        display: block;
+        color: #dc2626;
+        font-size: 11px;
+        margin-top: 7px;
+    }
+
+    .input-validation-error {
+        border-color: #ef4444 !important;
+        background: #fffafa !important;
+    }
+
+    .form-footer {
+        border-top: 1px solid #edf1f7;
+        margin-top: 28px;
+        padding-top: 23px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .form-footer-note {
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 22px;
+        min-height: 43px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .form-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+    .btn-submit {
+        background: linear-gradient(120deg, #1d4ed8, #2563eb);
+        color: #fff;
+        box-shadow: 0 5px 13px rgba(37,99,235,.2);
+    }
+
+        .btn-submit:hover {
+            background: linear-gradient(120deg, #1e40af, #1d4ed8);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(37,99,235,.25);
+        }
+
+    @@media (max-width: 768px) {
+        .insert-header {
+            padding: 23px;
+        }
+
+            .insert-header h2 {
+                font-size: 19px;
+            }
+
+        .insert-card-body {
+            padding: 22px;
+        }
+
+        .insert-form-grid {
+            grid-template-columns: 1fr;
+            gap: 21px;
+        }
+
+        .form-group.full-width {
+            grid-column: auto;
+        }
+
+        .form-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .form-actions {
+            width: 100%;
+        }
+
+            .form-actions .form-btn {
+                flex: 1;
+            }
+    }
+
+    @@media (max-width: 480px) {
+        .insert-header {
+            padding: 20px;
+        }
+
+        .insert-card-body {
+            padding: 17px;
+        }
+
+        .status-box {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .status-switch {
+            align-self: flex-end;
+        }
+
+        .btn-back {
+            width: 100%;
+        }
     }
 </style>
 
+<div class="insert-page">
+
+    <!-- Header -->
+    <div class="insert-header">
+
+        <div>
+            <h2>افزودن دسته‌بندی جدید</h2>
+            <p>
+                در این بخش می‌توانید دسته‌بندی جدیدی برای اخبار سایت ایجاد کنید.
+            </p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="NewsCategory"
+           asp-action="Index"
+           class="btn-back">
+
+            <i class="bi bi-arrow-right"></i>
+            بازگشت به دسته‌بندی‌ها
+
+        </a>
+
+    </div>
+
+    <!-- Form Card -->
+    <div class="insert-card">
+
+        <div class="insert-card-header">
+
+            <div class="insert-card-header-icon">
+                <i class="bi bi-folder-plus"></i>
+            </div>
+
+            <div>
+                <h3>اطلاعات دسته‌بندی</h3>
+                <span>لطفاً اطلاعات موردنیاز را با دقت وارد کنید.</span>
+            </div>
+
+        </div>
+
+        <div class="insert-card-body">
+
+            <form asp-area="Admin"
+                  asp-controller="NewsCategory"
+                  asp-action="InsertNewCategory"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <div asp-validation-summary="All"
+                     class="alert alert-danger validation-summary"
+                     role="alert"></div>
+
+                <div class="insert-form-grid">
+
+                    <!-- Title -->
+                    <div class="form-group">
+
+                        <label asp-for="NewsCategoryTitle"
+                               class="field-label">
+
+                            عنوان دسته‌بندی
+                            <span class="required-mark">*</span>
+
+                        </label>
+
+                        <input asp-for="NewsCategoryTitle"
+                               class="field-input"
+                               placeholder="مثلاً فناوری، بازی‌های ویدیویی..." />
+
+                        <span asp-validation-for="NewsCategoryTitle"></span>
+
+                    </div>
+
+                    <!-- Image -->
+                    <div class="form-group">
+
+                        <div class="field-label">
+                            تصویر دسته‌بندی
+                        </div>
+
+                        <label class="image-upload-box" id="imageUploadBox">
+
+                            <input asp-for="NewsCategoryImage"
+                                   type="file"
+                                   accept=".jpg,.jpeg,.png,.webp"
+                                   id="NewsCategoryImage" />
+
+                            <div class="upload-icon">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                            </div>
+
+                            <div class="upload-title" id="uploadTitle">
+                                برای انتخاب تصویر کلیک کنید
+                            </div>
+
+                            <div class="upload-description">
+                                فرمت‌های مجاز JPG، PNG و WEBP
+                            </div>
+
+                            <div class="selected-file" id="selectedFile"></div>
+
+                            <img id="imagePreview"
+                                 class="image-preview"
+                                 alt="پیش‌نمایش تصویر دسته‌بندی" />
+
+                        </label>
+
+                        <span asp-validation-for="NewsCategoryImage"></span>
+
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group full-width">
+
+                        <label asp-for="NewsCategoryDescription"
+                               class="field-label">
+
+                            توضیحات دسته‌بندی
+
+                        </label>
+
+                        <textarea asp-for="NewsCategoryDescription"
+                                  class="field-input"
+                                  placeholder="توضیح کوتاهی درباره این دسته‌بندی بنویسید..."></textarea>
+
+                        <span asp-validation-for="NewsCategoryDescription"></span>
+
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group full-width">
+
+                        <div class="status-box">
+
+                            <div class="status-info">
+
+                                <div class="status-icon">
+                                    <i class="bi bi-toggle-on"></i>
+                                </div>
+
+                                <div>
+                                    <div class="status-title">
+                                        وضعیت دسته‌بندی
+                                    </div>
+
+                                    <div class="status-description">
+                                        در صورت فعال بودن، این دسته‌بندی در بخش عمومی سایت قابل نمایش خواهد بود.
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <label class="status-switch">
+
+                                <input asp-for="IsActive"
+                                       type="checkbox" />
+
+                                <span>فعال باشد</span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="form-footer">
+
+                    <div class="form-footer-note">
+                        <i class="bi bi-info-circle ms-1"></i>
+                        فیلدهای دارای ستاره الزامی هستند.
+                    </div>
+
+                    <div class="form-actions">
+
+                        <a asp-area="Admin"
+                           asp-controller="NewsCategory"
+                           asp-action="Index"
+                           class="form-btn btn-cancel">
+
+                            انصراف
+
+                        </a>
+
+                        <button type="submit"
+                                class="form-btn btn-submit">
+
+                            <i class="bi bi-check-lg"></i>
+                            ثبت دسته‌بندی
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
 @section Scripts {
+
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const imageInput = document.getElementById('NewsCategoryImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const selectedFile = document.getElementById('selectedFile');
+        const uploadTitle = document.getElementById('uploadTitle');
+        const uploadBox = document.getElementById('imageUploadBox');
+
+        imageInput.addEventListener('change', function() {
+
+            const file = this.files[0];
+
+            if (!file) {
+                imagePreview.style.display = 'none';
+                imagePreview.src = '';
+                selectedFile.textContent = '';
+                uploadTitle.textContent = 'برای انتخاب تصویر کلیک کنید';
+                uploadBox.classList.remove('has-file');
+                return;
+            }
+
+            const allowedTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/webp'
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+                this.value = '';
+                imagePreview.style.display = 'none';
+                imagePreview.src = '';
+                selectedFile.textContent = '';
+                uploadTitle.textContent = 'فرمت فایل معتبر نیست';
+                uploadBox.classList.remove('has-file');
+                return;
+            }
+
+            selectedFile.textContent = file.name;
+            uploadTitle.textContent = 'تصویر انتخاب شد';
+            uploadBox.classList.add('has-file');
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                imagePreview.src = event.target.result;
+                imagePreview.style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+    </script>
 }
