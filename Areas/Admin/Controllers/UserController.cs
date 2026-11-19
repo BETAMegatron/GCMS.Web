@@ -12,13 +12,16 @@ namespace GCMS.Web.Areas.Admin.Controllers
     {
         private readonly IUserRepository _iuserRepository;
         private readonly PasswordHasher<User> _ipasswordhasher;
-        private readonly PersianDate _persianDate;   
+        private readonly PersianDate _persianDate;
+        private readonly IWebHostEnvironment _iwebhostenvoriment;
 
-        public UserController(IUserRepository IUserRepository , PersianDate PersianDate)
+        public UserController(IUserRepository IUserRepository , PersianDate PersianDate , IWebHostEnvironment IWebHostEnvironment)
         {
             _iuserRepository = IUserRepository;
             _persianDate = PersianDate;
+            _iwebhostenvoriment = IWebHostEnvironment;
         }
+        //نمایش کاربرام
         [HttpGet]
         public IActionResult Index()
         {
@@ -42,7 +45,9 @@ namespace GCMS.Web.Areas.Admin.Controllers
             }).ToList();
             return View("~/Areas/Admin/Views/Users/Index.cshtml",model);
         }
+        //غیر فعال کردن کاربر
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserDeactivation(int id)
         {
             if(id <= 0)
@@ -58,7 +63,9 @@ namespace GCMS.Web.Areas.Admin.Controllers
             await _iuserRepository.SaveInAsync();
             return RedirectToAction("Index", "User", new { area = "Admin" });
         }
+        //قعال کردن کاربر
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserActivation(int id)
         {
             if (id <= 0)
@@ -74,5 +81,40 @@ namespace GCMS.Web.Areas.Admin.Controllers
             await _iuserRepository.SaveInAsync();
             return RedirectToAction("Index", "User", new { area = "Admin" });
         }
+        //افزودن کاربر
+        [HttpGet]
+        public IActionResult InsertUser()
+        {
+            return View("~/Areas/Admin/Views/Users/Insert.cshtml");
+        }
+        //ذخیره کاربر  اضافه شده
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> InsertUser(UserCreateByAdminViewModel user)
+        {
+            var model = new User();
+            model.FirstName = user.FirstName;
+            model.LastName = user.LastName;
+            model.Username = user.Username;
+            model.Password = user.Password;
+            model.Email = user.Email;
+            model.UserIsActived = user.UserIsActived;
+            model.UserCreationDate = user.UserCreationDate;
+            if(user.UserProfileImage == null || user.UserProfileImage.Length > 0)
+            {
+                var filename = Guid.NewGuid().ToString() + Path.GetExtension(user.UserProfileImage.FileName);
+                var path = Path.Combine(_iwebhostenvoriment.WebRootPath, "Image", "Profile", filename);
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                using(var steam = new FileStream(path,FileMode.Create))
+                {
+                    user.UserProfileImage.CopyToAsync(steam);
+                }
+                model.UserProfileImageName = filename;
+            }
+            _iuserRepository.InsertUser(model);
+            await _iuserRepository.SaveInAsync();
+            return RedirectToAction("Index", "User", new { area = "Admin" });
+        }
+
     }
 }

@@ -17,6 +17,7 @@ namespace GCMS.Web.Areas.Admin.Controllers
             _persiandate = PersianDate;
             _iwebHostEnvironment = IWebHostEnvironment;
         }
+        //نمایشش دسته بندی ها
         [HttpGet]
         public IActionResult Index()
         {
@@ -38,6 +39,7 @@ namespace GCMS.Web.Areas.Admin.Controllers
             }).ToList();
             return View("~/Areas/Admin/Views/NewsCategory/Index.cshtml", model);
         }
+        //غیرفعالسازی
         [HttpPost]
         public async Task<IActionResult> DeactiveNewsCategory(int id)
         {
@@ -54,6 +56,7 @@ namespace GCMS.Web.Areas.Admin.Controllers
             _newsCategoryRepository.SaveInAsync();
             return RedirectToAction("Index", "NewsCategory");
         }
+       // فعالسازی
         [HttpPost]
         public async Task<IActionResult> ActivateNewsCategory(int id)
         {
@@ -70,6 +73,7 @@ namespace GCMS.Web.Areas.Admin.Controllers
             _newsCategoryRepository.SaveInAsync();
             return RedirectToAction("Index", "NewsCategory");
         }
+        //حذف دسته بندی
         [HttpPost]
         public async Task<IActionResult> DeleteNewsCategory(int id)
         {

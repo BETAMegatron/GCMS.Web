@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<GCMS.Web.Areas.Admin.Models.ViewModel.User.UserShowViewModel>
+﻿@model IEnumerable<GCMS.Web.Areas.Admin.Models.ViewModel.User.UserShowViewModel>
 
 @{
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -30,18 +29,18 @@
         flex-wrap: wrap;
     }
 
-    .user-header h2 {
-        font-size: 23px;
-        font-weight: 800;
-        margin: 0 0 10px;
-    }
+        .user-header h2 {
+            font-size: 23px;
+            font-weight: 800;
+            margin: 0 0 10px;
+        }
 
-    .user-header p {
-        color: rgba(255,255,255,.78);
-        margin: 0;
-        font-size: 13px;
-        line-height: 1.9;
-    }
+        .user-header p {
+            color: rgba(255,255,255,.78);
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.9;
+        }
 
     .btn-add-user {
         background: #fff;
@@ -61,15 +60,15 @@
         white-space: nowrap;
     }
 
-    .btn-add-user:hover {
-        background: #eff6ff;
-        color: #1e3a8a;
-        transform: translateY(-2px);
-    }
+        .btn-add-user:hover {
+            background: #eff6ff;
+            color: #1e3a8a;
+            transform: translateY(-2px);
+        }
 
-    .btn-add-user i {
-        font-size: 17px;
-    }
+        .btn-add-user i {
+            font-size: 17px;
+        }
 
     .user-summary {
         display: grid;
@@ -90,10 +89,10 @@
         transition: .2s;
     }
 
-    .summary-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 9px 22px rgba(15,23,42,.07);
-    }
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 22px rgba(15,23,42,.07);
+        }
 
     .summary-icon {
         width: 49px;
@@ -139,23 +138,23 @@
         flex-wrap: wrap;
     }
 
-    .table-heading h3 {
-        color: #172554;
-        font-size: 16px;
-        font-weight: 800;
-        margin: 0;
-    }
+        .table-heading h3 {
+            color: #172554;
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0;
+        }
 
-    .table-heading h3 i {
-        color: #2563eb;
-        margin-left: 6px;
-    }
+            .table-heading h3 i {
+                color: #2563eb;
+                margin-left: 6px;
+            }
 
-    .table-heading span {
-        color: #94a3b8;
-        font-size: 12px;
-        font-weight: 600;
-    }
+        .table-heading span {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
     .table-responsive {
         overflow-x: auto;
@@ -169,41 +168,41 @@
         margin: 0;
     }
 
-    .user-table thead {
-        background: #f8fafc;
-    }
+        .user-table thead {
+            background: #f8fafc;
+        }
 
-    .user-table th {
-        color: #64748b;
-        font-size: 12px;
-        font-weight: 800;
-        padding: 17px 12px;
-        text-align: center;
-        white-space: nowrap;
-        border-bottom: 1px solid #e9eef5;
-    }
+        .user-table th {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 17px 12px;
+            text-align: center;
+            white-space: nowrap;
+            border-bottom: 1px solid #e9eef5;
+        }
 
-    .user-table td {
-        color: #334155;
-        font-size: 12px;
-        font-weight: 600;
-        padding: 15px 12px;
-        text-align: center;
-        vertical-align: middle;
-        border-bottom: 1px solid #f1f5f9;
-    }
+        .user-table td {
+            color: #334155;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 15px 12px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
 
-    .user-table tbody tr {
-        transition: background .2s;
-    }
+        .user-table tbody tr {
+            transition: background .2s;
+        }
 
-    .user-table tbody tr:hover {
-        background: #f8fbff;
-    }
+            .user-table tbody tr:hover {
+                background: #f8fbff;
+            }
 
-    .user-table tbody tr:last-child td {
-        border-bottom: none;
-    }
+            .user-table tbody tr:last-child td {
+                border-bottom: none;
+            }
 
     .user-info {
         display: flex;
@@ -306,53 +305,53 @@
         transition: all .2s ease;
     }
 
-    .action-btn i {
-        font-size: 13px;
-    }
+        .action-btn i {
+            font-size: 13px;
+        }
 
-    .action-btn:hover {
-        transform: translateY(-2px);
-    }
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
 
     .btn-edit {
         background: #eff6ff;
         color: #2563eb;
     }
 
-    .btn-edit:hover {
-        background: #2563eb;
-        color: #fff;
-    }
+        .btn-edit:hover {
+            background: #2563eb;
+            color: #fff;
+        }
 
     .btn-activate {
         background: #dcfce7;
         color: #15803d;
     }
 
-    .btn-activate:hover {
-        background: #16a34a;
-        color: #fff;
-    }
+        .btn-activate:hover {
+            background: #16a34a;
+            color: #fff;
+        }
 
     .btn-deactivate {
         background: #fff7ed;
         color: #c2410c;
     }
 
-    .btn-deactivate:hover {
-        background: #ea580c;
-        color: #fff;
-    }
+        .btn-deactivate:hover {
+            background: #ea580c;
+            color: #fff;
+        }
 
     .btn-delete {
         background: #fee2e2;
         color: #b91c1c;
     }
 
-    .btn-delete:hover {
-        background: #dc2626;
-        color: #fff;
-    }
+        .btn-delete:hover {
+            background: #dc2626;
+            color: #fff;
+        }
 
     .empty-state {
         padding: 65px 20px;
@@ -397,9 +396,9 @@
         padding: 20px;
     }
 
-    .delete-modal-backdrop.show {
-        display: flex;
-    }
+        .delete-modal-backdrop.show {
+            display: flex;
+        }
 
     .delete-modal {
         width: 100%;
@@ -417,6 +416,7 @@
             opacity: 0;
             transform: translateY(12px) scale(.97);
         }
+
         to {
             opacity: 1;
             transform: translateY(0) scale(1);
@@ -476,36 +476,36 @@
         transition: .2s;
     }
 
-    .modal-btn:hover {
-        transform: translateY(-2px);
-    }
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
 
     .modal-btn-cancel {
         background: #f1f5f9;
         color: #475569;
     }
 
-    .modal-btn-cancel:hover {
-        background: #e2e8f0;
-    }
+        .modal-btn-cancel:hover {
+            background: #e2e8f0;
+        }
 
     .modal-btn-delete {
         background: #dc2626;
         color: #fff;
     }
 
-    .modal-btn-delete:hover {
-        background: #b91c1c;
-    }
+        .modal-btn-delete:hover {
+            background: #b91c1c;
+        }
 
     @@media (max-width: 768px) {
         .user-header {
             padding: 22px;
         }
 
-        .user-header h2 {
-            font-size: 19px;
-        }
+            .user-header h2 {
+                font-size: 19px;
+            }
 
         .table-heading {
             padding: 17px;
@@ -538,7 +538,7 @@
 
         <a asp-area="Admin"
            asp-controller="User"
-           asp-action="InsertNewUser"
+           asp-action="InsertUser"
            class="btn-add-user">
             <i class="bi bi-person-plus-fill"></i>
             افزودن کاربر جدید
@@ -612,9 +612,10 @@
                                 <td>
                                     <div class="user-info">
 
+
                                         @if (!string.IsNullOrWhiteSpace(user.UserProfileImageName))
                                         {
-                                            <img src="@Url.Content("~/Image/Users/" + user.UserProfileImageName)"
+                                            <img src="@Url.Content("~/Image/Profile/" + user.UserProfileImageName)"
                                                  alt="@user.FirstName @user.LastName"
                                                  class="user-image"
                                                  onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='inline-flex';" />
@@ -629,6 +630,7 @@
                                                 <i class="bi bi-person-fill"></i>
                                             </div>
                                         }
+
 
                                         <div>
                                             <div class="user-name">
@@ -821,13 +823,13 @@
         document.body.style.overflow = '';
     }
 
-    deleteModal.addEventListener('click', function (event) {
+    deleteModal.addEventListener('click', function(event) {
         if (event.target === deleteModal) {
             closeDeleteModal();
         }
     });
 
-    document.addEventListener('keydown', function (event) {
+    document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' && deleteModal.classList.contains('show')) {
             closeDeleteModal();
         }
