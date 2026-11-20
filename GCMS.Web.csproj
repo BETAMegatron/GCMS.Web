@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Services\Service\Permission\" />
+    <Folder Include="Areas\Admin\Services\Service\Role\" />
     <Folder Include="Areas\Admin\Views\News\" />
     <Folder Include="Data\Configurations\" />
     <Folder Include="Models\DTOs\" />

@@ -1,4 +1,5 @@
-﻿using GCMS.Web.Models.Entities.General;
+﻿using GCMS.Web.Areas.Admin.Models.ViewModel.RP.Roles;
+using GCMS.Web.Models.Entities.General;
 using GCMS.Web.Models.Entities.News;
 using GCMS.Web.Models.Entities.Permission;
 using GCMS.Web.Models.Entities.Roles;
@@ -21,12 +22,15 @@ namespace GCMS.Web.Data.Context
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<About> Abouts { get; set; }
 
+
+        public DbSet<RoleShowViewModel> RoleShowViewModels { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<UserRole>().HasIndex( ur => new { ur.UserID,ur.RoleID }).IsUnique();
             modelBuilder.Entity<RolePermission>().HasIndex(rp => new { rp.PermissionID, rp.RoleID }).IsUnique();
-
+            modelBuilder.Entity<RoleShowViewModel>().HasNoKey();
             modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
             // modelBuilder.Entity<NewsCategory>().HasIndex(cn => cn.NewsCategoryTitle).IsUnique().HasFilter("[Deleted] = 0");
             //modelBuilder.Entity<News>().HasOne(n => n.NewsCategory).WithMany(n => n.News).HasForeignKey(n => n.NewsCategoryID);

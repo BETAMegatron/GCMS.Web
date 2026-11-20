@@ -18,6 +18,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddScoped<PersianDate>();
 builder.Services.AddScoped<INewsCategoryRepository, NewsCategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoloeRepository, RoleRepository>();
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 var app = builder.Build();
@@ -38,7 +39,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllerRoute(
         name: "Admin",
         pattern: "{area:exists}/{controller=Home}/{Action=Index}/{id?}");
