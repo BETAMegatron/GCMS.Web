@@ -1,5 +1,360 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model GCMS.Web.Areas.Admin.Models.ViewModel.User.UserEditByAdminViewModel
+
+<div class="edit-user-modal-backdrop" id="editUserModal">
+
+    <div class="edit-user-modal">
+
+        <div class="edit-user-header">
+            <div>
+                <h3>
+                    <i class="bi bi-person-gear"></i>
+                    ویرایش اطلاعات کاربر
+                </h3>
+                <p>اطلاعات کاربر موردنظر را ویرایش کنید.</p>
+            </div>
+
+            <button type="button"
+                    class="edit-user-close"
+                    onclick="closeEditUserModal()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form asp-area="Admin"
+              asp-controller="User"
+              asp-action="EditUser"
+              method="post"
+              enctype="multipart/form-data"
+              id="editUserForm">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="UserID" />
+
+            <div class="edit-user-body">
+
+                <div class="edit-user-image-section">
+
+                    <img id="editUserImagePreview"
+                         src="~/Image/Profile/default.png"
+                         alt="تصویر کاربر"
+                         onerror="this.onerror=null; this.src=''; this.style.display='none'; document.getElementById('editUserImagePlaceholder').style.display='flex';" />
+
+                    <div id="editUserImagePlaceholder"
+                         class="edit-user-image-placeholder"
+                         style="display:none;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+
+                    <label for="editUserProfileImage" class="edit-user-image-btn">
+                        <i class="bi bi-camera-fill"></i>
+                        تغییر تصویر
+                    </label>
+
+                    <input asp-for="UserProfileImage"
+                           type="file"
+                           id="editUserProfileImage"
+                           accept="image/*"
+                           hidden />
+
+                </div>
+
+                <div class="edit-user-fields">
+
+                    <div class="edit-user-field">
+                        <label asp-for="FirstName">نام</label>
+                        <input asp-for="FirstName"
+                               id="editFirstName"
+                               class="form-control"
+                               placeholder="نام کاربر" />
+                        <span asp-validation-for="FirstName"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="edit-user-field">
+                        <label asp-for="LastName">نام خانوادگی</label>
+                        <input asp-for="LastName"
+                               id="editLastName"
+                               class="form-control"
+                               placeholder="نام خانوادگی کاربر" />
+                        <span asp-validation-for="LastName"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="edit-user-field">
+                        <label asp-for="Username">نام کاربری</label>
+                        <input asp-for="Username"
+                               id="editUsername"
+                               class="form-control"
+                               placeholder="نام کاربری" />
+                        <span asp-validation-for="Username"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="edit-user-field">
+                        <label asp-for="Email">ایمیل</label>
+                        <input asp-for="Email"
+                               id="editEmail"
+                               class="form-control"
+                               placeholder="example@email.com"
+                               dir="ltr" />
+                        <span asp-validation-for="Email"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="edit-user-field">
+                        <label asp-for="Password">رمز عبور جدید</label>
+                        <input asp-for="Password"
+                               id="editPassword"
+                               type="password"
+                               class="form-control"
+                               placeholder="در صورت عدم تغییر، خالی بگذارید"
+                               autocomplete="new-password" />
+                        <small>اگر قصد تغییر رمز عبور را ندارید، این قسمت را خالی بگذارید.</small>
+                        <span asp-validation-for="Password"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="edit-user-field">
+                        <label>وضعیت حساب</label>
+
+                        <select asp-for="UserIsActived"
+                                id="editUserIsActived"
+                                class="form-select">
+                            <option value="true">فعال</option>
+                            <option value="false">غیرفعال</option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="edit-user-footer">
+
+                <button type="button"
+                        class="edit-user-cancel"
+                        onclick="closeEditUserModal()">
+                    انصراف
+                </button>
+
+                <button type="submit" class="edit-user-submit">
+                    <i class="bi bi-check-circle-fill"></i>
+                    ذخیره تغییرات
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+    .edit-user-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        background: rgba(15, 23, 42, .65);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        direction: rtl;
+    }
+
+        .edit-user-modal-backdrop.show {
+            display: flex;
+        }
+
+    .edit-user-modal {
+        width: 100%;
+        max-width: 650px;
+        max-height: 90vh;
+        overflow-y: auto;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 25px 70px rgba(0,0,0,.25);
+        animation: editModalShow .22s ease;
+    }
+
+    .edit-user-header {
+        padding: 22px 25px;
+        background: linear-gradient(125deg, #172554, #2563eb);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .edit-user-header h3 {
+            font-size: 17px;
+            font-weight: 800;
+            margin: 0 0 7px;
+        }
+
+            .edit-user-header h3 i {
+                margin-left: 7px;
+            }
+
+        .edit-user-header p {
+            font-size: 12px;
+            color: rgba(255,255,255,.8);
+            margin: 0;
+        }
+
+    .edit-user-close {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 10px;
+        background: rgba(255,255,255,.16);
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .edit-user-body {
+        padding: 25px;
+    }
+
+    .edit-user-image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    #editUserImagePreview,
+    .edit-user-image-placeholder {
+        width: 100px;
+        height: 100px;
+        border-radius: 18px;
+        object-fit: cover;
+        border: 2px solid #e2e8f0;
+        background: #eff6ff;
+    }
+
+    .edit-user-image-placeholder {
+        align-items: center;
+        justify-content: center;
+        color: #2563eb;
+        font-size: 35px;
+    }
+
+    .edit-user-image-btn {
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 8px 14px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .edit-user-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 17px;
+    }
+
+    .edit-user-field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+        .edit-user-field label {
+            font-size: 12px;
+            font-weight: 800;
+            color: #334155;
+        }
+
+        .edit-user-field input,
+        .edit-user-field select {
+            min-height: 43px;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 12px;
+            padding: 9px 12px;
+        }
+
+            .edit-user-field input:focus,
+            .edit-user-field select:focus {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+                outline: none;
+            }
+
+        .edit-user-field small {
+            color: #94a3b8;
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        .edit-user-field .text-danger {
+            font-size: 11px;
+        }
+
+    .edit-user-footer {
+        padding: 17px 25px;
+        border-top: 1px solid #edf1f7;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .edit-user-cancel,
+    .edit-user-submit {
+        border: none;
+        border-radius: 9px;
+        padding: 11px 19px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .edit-user-cancel {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .edit-user-submit {
+        background: #2563eb;
+        color: #fff;
+    }
+
+        .edit-user-submit:hover {
+            background: #1d4ed8;
+        }
+
+    @@keyframes editModalShow {
+        from {
+            opacity: 0;
+            transform: translateY(12px) scale(.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @@media(max-width: 600px) {
+        .edit-user-fields {
+            grid-template-columns: 1fr;
+        }
+
+        .edit-user-modal {
+            max-height: 95vh;
+        }
+
+        .edit-user-body {
+            padding: 18px;
+        }
+    }
+</style>

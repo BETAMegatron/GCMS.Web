@@ -95,6 +95,7 @@ namespace GCMS.Web.Areas.Admin.Controllers
         {
             return View("~/Areas/Admin/Views/NewsCategory/Insert.cshtml");
         }
+        //افزودن دسته بندی
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> InsertNewCategory(NewCategoryInsertViewModel categoory)
@@ -123,30 +124,31 @@ namespace GCMS.Web.Areas.Admin.Controllers
             await _newsCategoryRepository.SaveInAsync();
             return RedirectToAction("Index", "NewsCategory", new { area = "Admin" });
         }
-        [HttpGet]
-        public IActionResult EditeNewsCategory(int id)
-        {
-            if (id <= 0)
-            {
-                return Content("شناسه نا معتبر می باشد");
-            }
-            var nwc = _newsCategoryRepository.GetNewsCategoryByID(id);
-            if (nwc == null)
-            {
-                return Content("دسته بندی  معتبر نیست");
-            }
-            var model = new NewsCategoryEditViewModel
-            {
-                NewsCategoryID = nwc.NewsCategoryID,
-                NewsCategoryTitle = nwc.NewsCategoryTitle,
-                NewsCategoryDescription = nwc.NewsCategoryDescription,
-                NewsCategoryImageName = nwc.NewsCategoryImageName,
-                IsActive = nwc.IsActive,
-                NewsCategoryCreationDate = nwc.NewsCategoryCreationDate
-            };
-            return View("~/Areas/Admin/Views/NewsCategory/Edit.cshtml", model);
-        }
-
+        //ویرایش دسته بندی
+        //[HttpGet]
+        //public IActionResult EditeNewsCategory(int id)
+        //{
+        //    if (id <= 0)
+        //    {
+        //        return Content("شناسه نا معتبر می باشد");
+        //    }
+        //    var nwc = _newsCategoryRepository.GetNewsCategoryByID(id);
+        //    if (nwc == null)
+        //    {
+        //        return Content("دسته بندی  معتبر نیست");
+        //    }
+        //    var model = new NewsCategoryEditViewModel
+        //    {
+        //        NewsCategoryID = nwc.NewsCategoryID,
+        //        NewsCategoryTitle = nwc.NewsCategoryTitle,
+        //        NewsCategoryDescription = nwc.NewsCategoryDescription,
+        //        NewsCategoryImageName = nwc.NewsCategoryImageName,
+        //        IsActive = nwc.IsActive,
+        //        NewsCategoryCreationDate = nwc.NewsCategoryCreationDate
+        //    };
+        //    return View("~/Areas/Admin/Views/NewsCategory/Edit.cshtml", model);
+        //}
+        //ذخیره ویرایش دسته بندی
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditeNewsCategory(NewsCategoryEditViewModel category, int id)

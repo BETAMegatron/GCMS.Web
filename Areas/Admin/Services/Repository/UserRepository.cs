@@ -24,14 +24,13 @@ namespace GCMS.Web.Areas.Admin.Services.Repository
 
         public User GetUserByID(int userID)
         {
-            return _db.Users.FirstOrDefault(u => u.UserID == userID && u.UserIsActived && !u.Deleted);
+            return _db.Users.FirstOrDefault(u => u.UserID == userID && !u.Deleted);
         }
 
         public void InsertUser(User user)
         {
             _db.Users.Add(user);
         }
-
         public void Save()
         {
             _db.SaveChanges();

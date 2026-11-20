@@ -2,8 +2,12 @@
 using GCMS.Web.Areas.Admin.Services.Interface;
 using GCMS.Web.Models.Entities.Users;
 using GCMS.Web.Utilities;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GCMS.Web.Areas.Admin.Controllers
 {
@@ -15,7 +19,7 @@ namespace GCMS.Web.Areas.Admin.Controllers
         private readonly PersianDate _persianDate;
         private readonly IWebHostEnvironment _iwebhostenvoriment;
 
-        public UserController(IUserRepository IUserRepository , PersianDate PersianDate , IWebHostEnvironment IWebHostEnvironment)
+        public UserController(IUserRepository IUserRepository, PersianDate PersianDate, IWebHostEnvironment IWebHostEnvironment)
         {
             _iuserRepository = IUserRepository;
             _persianDate = PersianDate;
@@ -26,7 +30,7 @@ namespace GCMS.Web.Areas.Admin.Controllers
         public IActionResult Index()
         {
             var usr = _iuserRepository.GetAllUsers();
-            if(!usr.Any())
+            if (!usr.Any())
             {
                 return Content("خطا در نمایش: هیچ کاربری برای نمایش یافت نشد");
             }
@@ -43,19 +47,19 @@ namespace GCMS.Web.Areas.Admin.Controllers
                 UserProfileImageName = model.UserProfileImageName,
                 UserIsActived = model.UserIsActived,
             }).ToList();
-            return View("~/Areas/Admin/Views/Users/Index.cshtml",model);
+            return View("~/Areas/Admin/Views/Users/Index.cshtml", model);
         }
         //غیر فعال کردن کاربر
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserDeactivation(int id)
         {
-            if(id <= 0)
+            if (id <= 0)
             {
                 return Content("خطا در نمایش: شناسه کاربر معتبر نیست");
             }
             var usr = _iuserRepository.GetUserByID(id);
-            if(usr == null)
+            if (usr == null)
             {
                 return Content("خطا در نمایش: کاربر مورد نظر یافت نشد");
             }
@@ -100,12 +104,12 @@ namespace GCMS.Web.Areas.Admin.Controllers
             model.Email = user.Email;
             model.UserIsActived = user.UserIsActived;
             model.UserCreationDate = user.UserCreationDate;
-            if(user.UserProfileImage == null || user.UserProfileImage.Length > 0)
+            if (user.UserProfileImage == null || user.UserProfileImage.Length > 0)
             {
                 var filename = Guid.NewGuid().ToString() + Path.GetExtension(user.UserProfileImage.FileName);
                 var path = Path.Combine(_iwebhostenvoriment.WebRootPath, "Image", "Profile", filename);
                 Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-                using(var steam = new FileStream(path,FileMode.Create))
+                using (var steam = new FileStream(path, FileMode.Create))
                 {
                     user.UserProfileImage.CopyToAsync(steam);
                 }
@@ -114,6 +118,72 @@ namespace GCMS.Web.Areas.Admin.Controllers
             _iuserRepository.InsertUser(model);
             await _iuserRepository.SaveInAsync();
             return RedirectToAction("Index", "User", new { area = "Admin" });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "مدیریت کاربران,مدیریت سامانه")]
+        public async Task<IActionResult> LoginAsUser(int id)
+        {
+            if (id <= 0)
+            {
+                return Content("خطا در انجام عملیات: کاربری معتبری یافت نشد");
+            }
+            var usr = _iuserRepository.GetUserByID(id);
+            if (usr == null || usr.Deleted || !usr.UserIsActived)
+            {
+                return Content("خطا در ورود: امکان ورود به حساب این کار نمی باشد");
+            }
+
+
+            var adminID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(adminID))
+            {
+                return Content("خطا: هویت مدیر فعلی قابل تشخیص نیست.");
+            }
+
+            var claims = new List<Claim>{
+                new Claim(ClaimTypes.NameIdentifier, usr.UserID.ToString()),
+                new Claim(ClaimTypes.Name, usr.Username),
+                new Claim("OriginalAdminUserID",adminID)
+            };
+            var cad = CookieAuthenticationDefaults.AuthenticationScheme;
+            var identity = new ClaimsIdentity(claims, cad);
+            var principle = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(cad, principle);
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUser(UserEditByAdminViewModel user, int UserID)
+        {
+            if (UserID <= 0)
+            {
+                return Content("خطا در انجام عملیات: کاربری معتبری یافت نشد");
+            }
+            var usr = _iuserRepository.GetUserByID(UserID);
+            if (usr == null || usr.Deleted || !usr.UserIsActived)
+            {
+                return Content("خطا در ورود: امکان ورود به حساب این کار نمی باشد");
+            }
+            usr.FirstName = user.FirstName;
+            usr.LastName = user.LastName;
+            usr.Email = user.Email;
+            usr.Username = user.Username;
+            if (user.UserProfileImage != null && user.UserProfileImage.Length > 0)
+            {
+                var filename = Guid.NewGuid().ToString() + Path.GetExtension(user.UserProfileImage.FileName);
+                var path = Path.Combine(_iwebhostenvoriment.WebRootPath, "Image", "Profile", filename);
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    user.UserProfileImage.CopyToAsync(stream);
+                }
+                usr.UserProfileImageName = filename;
+            }
+            _iuserRepository.UpdateUser(usr);
+            await _iuserRepository.SaveInAsync();
+            return RedirectToAction("Index", "user", new { area = "Admin" });
         }
 
     }

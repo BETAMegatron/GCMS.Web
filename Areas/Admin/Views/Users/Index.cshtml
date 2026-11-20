@@ -281,17 +281,28 @@
 
     .action-buttons {
         display: flex;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 7px;
         flex-wrap: nowrap;
+        gap: 7px;
+        width: max-content;
+        margin: 0 auto;
     }
 
+        .action-buttons form {
+            width: 150px;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
     .action-btn {
+        width: 150px;
+        box-sizing: border-box;
         border: none;
         border-radius: 9px;
         padding: 9px 11px;
-        min-height: 35px;
+        min-height: 38px;
         font-family: inherit;
         font-size: 11px;
         font-weight: 800;
@@ -313,6 +324,12 @@
             transform: translateY(-2px);
         }
 
+        .action-btn:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
     .btn-edit {
         background: #eff6ff;
         color: #2563eb;
@@ -321,6 +338,21 @@
         .btn-edit:hover {
             background: #2563eb;
             color: #fff;
+        }
+
+    .btn-impersonate {
+        background: #f3e8ff;
+        color: #7e22ce;
+    }
+
+        .btn-impersonate:hover {
+            background: #9333ea;
+            color: #fff;
+        }
+
+        .btn-impersonate:disabled:hover {
+            background: #f3e8ff;
+            color: #7e22ce;
         }
 
     .btn-activate {
@@ -384,6 +416,7 @@
         margin: 0 0 20px;
     }
 
+    /* پنجره حذف */
     .delete-modal-backdrop {
         position: fixed;
         inset: 0;
@@ -529,7 +562,6 @@
 
 <div class="user-page">
 
-    <!-- Header -->
     <div class="user-header">
         <div>
             <h2>مدیریت کاربران</h2>
@@ -545,7 +577,6 @@
         </a>
     </div>
 
-    <!-- Statistics -->
     <div class="user-summary">
 
         <div class="summary-card">
@@ -580,7 +611,6 @@
 
     </div>
 
-    <!-- Users Table -->
     <div class="user-table-card">
 
         <div class="table-heading">
@@ -612,7 +642,6 @@
                                 <td>
                                     <div class="user-info">
 
-
                                         @if (!string.IsNullOrWhiteSpace(user.UserProfileImageName))
                                         {
                                             <img src="@Url.Content("~/Image/Profile/" + user.UserProfileImageName)"
@@ -630,7 +659,6 @@
                                                 <i class="bi bi-person-fill"></i>
                                             </div>
                                         }
-
 
                                         <div>
                                             <div class="user-name">
@@ -672,17 +700,47 @@
                                 <td>
                                     <div class="action-buttons">
 
-                                        <!-- Edit -->
-                                        <a asp-area="Admin"
-                                           asp-controller="User"
-                                           asp-action="EditUser"
-                                           asp-route-id="@user.UserID"
-                                           class="action-btn btn-edit">
+                                        <button type="button"
+                                                class="action-btn btn-edit"
+                                                onclick="openEditUserModal(this)"
+                                                data-user-id="@user.UserID"
+                                                data-first-name="@user.FirstName"
+                                                data-last-name="@user.LastName"
+                                                data-username="@user.Username"
+                                                data-email="@user.Email"
+                                                data-user-active="@user.UserIsActived"
+                                                data-user-image="@user.UserProfileImageName">
                                             <i class="bi bi-pencil-square"></i>
                                             ویرایش
-                                        </a>
+                                        </button>
 
-                                        <!-- Activate / Deactivate -->
+                                        @if (user.UserIsActived)
+                                        {
+                                            <form asp-area="Admin"
+                                                  asp-controller="User"
+                                                  asp-action="LoginAsUser"
+                                                  asp-route-id="@user.UserID"
+                                                  method="post">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <button type="submit" class="action-btn btn-impersonate">
+                                                    <i class="bi bi-person-fill-gear"></i>
+                                                    ورود به‌جای کاربر
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <button type="button"
+                                                    class="action-btn btn-impersonate"
+                                                    disabled
+                                                    title="کاربر غیرفعال می باشد">
+                                                <i class="bi bi-person-fill-gear"></i>
+                                                ورود به‌جای کاربر
+                                            </button>
+                                        }
+
                                         @if (user.UserIsActived)
                                         {
                                             <form asp-area="Admin"
@@ -693,8 +751,7 @@
 
                                                 @Html.AntiForgeryToken()
 
-                                                <button type="submit"
-                                                        class="action-btn btn-deactivate">
+                                                <button type="submit" class="action-btn btn-deactivate">
                                                     <i class="bi bi-pause-circle-fill"></i>
                                                     غیرفعال
                                                 </button>
@@ -710,15 +767,13 @@
 
                                                 @Html.AntiForgeryToken()
 
-                                                <button type="submit"
-                                                        class="action-btn btn-activate">
+                                                <button type="submit" class="action-btn btn-activate">
                                                     <i class="bi bi-check-circle-fill"></i>
                                                     فعال
                                                 </button>
                                             </form>
                                         }
 
-                                        <!-- Delete -->
                                         <button type="button"
                                                 class="action-btn btn-delete"
                                                 onclick="openDeleteModal(this)"
@@ -802,7 +857,14 @@
     </div>
 </div>
 
+<!-- Edit User Partial View -->
+@await Html.PartialAsync(
+    "~/Areas/Admin/Views/Users/Edit.cshtml",
+    new GCMS.Web.Areas.Admin.Models.ViewModel.User.UserEditByAdminViewModel()
+)
+
 <script>
+    // Delete Modal
     const deleteModal = document.getElementById('deleteModal');
     const deleteForm = document.getElementById('deleteUserForm');
     const deleteUserName = document.getElementById('deleteUserName');
@@ -829,9 +891,98 @@
         }
     });
 
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && deleteModal.classList.contains('show')) {
-            closeDeleteModal();
+    // Edit User Modal
+    const editUserModal = document.getElementById('editUserModal');
+
+    function openEditUserModal(button) {
+
+        document.getElementById('UserID').value =
+            button.dataset.userId;
+
+        document.getElementById('editFirstName').value =
+            button.dataset.firstName;
+
+        document.getElementById('editLastName').value =
+            button.dataset.lastName;
+
+        document.getElementById('editUsername').value =
+            button.dataset.username;
+
+        document.getElementById('editEmail').value =
+            button.dataset.email;
+
+        document.getElementById('editUserIsActived').value =
+            button.dataset.userActive.toLowerCase();
+
+        document.getElementById('editPassword').value = '';
+
+        const imageName = button.dataset.userImage;
+        const imagePreview = document.getElementById('editUserImagePreview');
+        const imagePlaceholder = document.getElementById('editUserImagePlaceholder');
+
+        if (imageName) {
+            imagePreview.src = '/Image/Profile/' + encodeURIComponent(imageName);
+            imagePreview.style.display = 'block';
+            imagePlaceholder.style.display = 'none';
+        }
+        else {
+            imagePreview.style.display = 'none';
+            imagePlaceholder.style.display = 'flex';
+        }
+
+        document.getElementById('editUserProfileImage').value = '';
+
+        editUserModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditUserModal() {
+        editUserModal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    editUserModal.addEventListener('click', function(event) {
+        if (event.target === editUserModal) {
+            closeEditUserModal();
         }
     });
+
+    // Close modals with Escape
+    document.addEventListener('keydown', function(event) {
+
+        if (event.key === 'Escape') {
+
+            if (deleteModal.classList.contains('show')) {
+                closeDeleteModal();
+            }
+
+            if (editUserModal.classList.contains('show')) {
+                closeEditUserModal();
+            }
+        }
+    });
+
+    // Preview selected profile image
+    document.getElementById('editUserProfileImage')
+        .addEventListener('change', function(event) {
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+
+                const preview = document.getElementById('editUserImagePreview');
+
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+
+                document.getElementById('editUserImagePlaceholder')
+                    .style.display = 'none';
+            };
+
+            reader.readAsDataURL(file);
+        });
 </script>
