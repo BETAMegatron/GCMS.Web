@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using GCMS.Web.Utilities;
 using GCMS.Web.Areas.Admin.Services.Interface;
 using GCMS.Web.Areas.Admin.Services.Repository;
+using GCMS.Web.Services.RabbitMQ;
+using GCMS.Web.Areas.Admin.Services.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +14,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<GCMSContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("GCMSDbContext")));
 //Authentication Login Service
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(op => op.LoginPath = "/Account/Login");
-
-
+//Add RabbitMQ:
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
+builder.Services.AddScoped<IRabbitMQService, RabbitMQService>();
 //DI:
 builder.Services.AddScoped<PersianDate>();
 builder.Services.AddScoped<INewsCategoryRepository, NewsCategoryRepository>();
