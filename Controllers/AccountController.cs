@@ -1,4 +1,5 @@
-﻿using GCMS.Web.Data.Context;
+﻿using GCMS.Web.Areas.Admin.Services.Email;
+using GCMS.Web.Data.Context;
 using GCMS.Web.Models.Entities.Users;
 using GCMS.Web.Models.ViewModels.Account;
 using GCMS.Web.Utilities;
@@ -16,13 +17,15 @@ namespace GCMS.Web.Controllers
     public class AccountController : Controller
     {
         private readonly GCMSContext _context;
+        private readonly IEmailService _iemailService;
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
         private readonly IWebHostEnvironment _iwebHostEnvironment;
 
-        public AccountController(GCMSContext GCMSContext, IWebHostEnvironment iwebHostEnvironment)
+        public AccountController(GCMSContext GCMSContext, IWebHostEnvironment iwebHostEnvironment , IEmailService IEmailService)
         {
             _context = GCMSContext;
             _iwebHostEnvironment = iwebHostEnvironment;
+            _iemailService = IEmailService;
         }
         //ورود به حساب
         [HttpGet]
@@ -47,6 +50,9 @@ namespace GCMS.Web.Controllers
             {
                 return Content("پسورد اشتباه می باشد");
             }
+            var code = new Random().Next(100000, 999999).ToString();         // ۱. تولید کد ۶ رقمی
+            await _iemailService.SendVerificationCode(usr.Email, code, "Login"); // ۲. ارسال به ایمیل کاربر
+            TempData["login_code"] = code;   // ۳. فعلاً موقتاً کد رو نگه دار (برای تست/مرحله بعد)
             var Claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier,usr.UserID.ToString()),

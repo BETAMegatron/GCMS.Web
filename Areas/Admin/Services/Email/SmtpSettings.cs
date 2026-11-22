@@ -1,6 +1,6 @@
 ﻿namespace GCMS.Web.Areas.Admin.Services.Email
 {
-    public class SmtpSetting
+    public class SmtpSettings
     {
         public string Host { get; set; } = string.Empty;
         public int Port { get; set; }
