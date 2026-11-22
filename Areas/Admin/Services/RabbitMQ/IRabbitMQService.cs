@@ -4,6 +4,6 @@ namespace GCMS.Web.Areas.Admin.Services.RabbitMQ
 {
     public interface IRabbitMQService
     {
-      Task PublishAsync(string queuename, string message);
+      Task PublishAsync(string RabbitQ, string message);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GCMS.Web.Services.RabbitMQ;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using System.Text;
@@ -10,43 +11,39 @@ namespace GCMS.Web.Areas.Admin.Services.RabbitMQ
         private readonly RabbitMQSettings _setting;
         private readonly ConnectionFactory _factory;
         private IConnection _connection;
-        private async Task ConnectAsync()
+        public RabbitMQService(IOptions<RabbitMQSettings> RabbitMQSettings)
         {
-            _connection = await _factory.CreateConnectionAsync();
-        }
-
-        public RabbitMQService(IOptions<RabbitMQSettings> oprion)
-        {
-            _setting = oprion.Value;
+            _setting = RabbitMQSettings.Value;
             _factory = new ConnectionFactory
             {
                 HostName = _setting.HostName,
                 Port = _setting.Port,
                 UserName = _setting.UserName,
-                Password = _setting.Password,
+                Password = _setting.Password
             };
         }
-        public async Task PublishAsync(string GCMSRabbitQ, string message)
+        public async Task ConnectionAsync()
+        {
+            _connection = await _factory.CreateConnectionAsync();
+        }
+        public async Task PublishAsync(string RabbitQ, string message)
         {
             if (_connection == null || !_connection.IsOpen)
-            {
-                await ConnectAsync();
-            }
+                await ConnectionAsync();
             await using IChannel channel = await _connection.CreateChannelAsync();
-
             await channel.QueueDeclareAsync(
-                queue: GCMSRabbitQ,
-                durable: true,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null
+                    queue: RabbitQ,
+                    durable: false,
+                    exclusive: false,
+                    arguments: null
                 );
             var body = Encoding.UTF8.GetBytes(message);
             await channel.BasicPublishAsync(
                 exchange: "",
-                routingKey: GCMSRabbitQ,
+                routingKey: RabbitQ,
                 body: body
                 );
+
         }
     }
 }
