@@ -2,6 +2,7 @@
 using GCMS.Web.Data.Context;
 using GCMS.Web.Models.Entities.Users;
 using GCMS.Web.Models.ViewModels.Account;
+using GCMS.Web.Services.Jwt;
 using GCMS.Web.Utilities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,15 +18,19 @@ namespace GCMS.Web.Controllers
     public class AccountController : Controller
     {
         private readonly GCMSContext _context;
+        private readonly IJwtService _jwtService;
         private readonly IEmailService _iemailService;
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
         private readonly IWebHostEnvironment _iwebHostEnvironment;
 
-        public AccountController(GCMSContext GCMSContext, IWebHostEnvironment iwebHostEnvironment , IEmailService IEmailService)
+        public AccountController(GCMSContext GCMSContext, IWebHostEnvironment iwebHostEnvironment , IEmailService IEmailService
+            , IJwtService IJwtService
+            )
         {
             _context = GCMSContext;
             _iwebHostEnvironment = iwebHostEnvironment;
             _iemailService = IEmailService;
+            _jwtService = IJwtService;
         }
         //ورود به حساب
         [HttpGet]
@@ -33,6 +38,62 @@ namespace GCMS.Web.Controllers
         {
             return View("~/Views/Account/Login.cshtml");
         }
+        [HttpPost]
+        public IActionResult LoginJwt(LoginViewModel user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("اطلاعات وارد شده معتبر نیست");
+            }
+
+            var usr = _context.Users.FirstOrDefault(u =>
+                u.Username == user.Username &&
+                !u.Deleted &&
+                u.UserIsActived);
+
+            if (usr == null)
+            {
+                return Unauthorized("اطلاعات کاربر یافت نشد");
+            }
+
+            var res = _passwordHasher.VerifyHashedPassword(
+                usr, usr.Password, user.Password);
+
+            if (res == PasswordVerificationResult.Failed)
+            {
+                return Unauthorized("پسورد اشتباه می‌باشد");
+            }
+
+            var token = _jwtService.GenerateToken(
+                usr.UserID,
+                usr.Username,
+                "مدیریت سامانه");
+
+            return Ok(new
+            {
+                AccessToken = token,
+                TokenType = "Bearer"
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel user)
         {
@@ -50,9 +111,6 @@ namespace GCMS.Web.Controllers
             {
                 return Content("پسورد اشتباه می باشد");
             }
-            var code = new Random().Next(100000, 999999).ToString();         // ۱. تولید کد ۶ رقمی
-            await _iemailService.SendVerificationCode(usr.Email, code, "Login"); // ۲. ارسال به ایمیل کاربر
-            TempData["login_code"] = code;   // ۳. فعلاً موقتاً کد رو نگه دار (برای تست/مرحله بعد)
             var Claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier,usr.UserID.ToString()),

@@ -1,8 +1,10 @@
-﻿using GCMS.Web.Services.RabbitMQ;
+﻿using GCMS.Web.Areas.Admin.Services.Message;
+using GCMS.Web.Services.RabbitMQ;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using System.Text;
+using System.Text.Json;
 
 namespace GCMS.Web.Areas.Admin.Services.RabbitMQ
 {
@@ -26,7 +28,7 @@ namespace GCMS.Web.Areas.Admin.Services.RabbitMQ
         {
             _connection = await _factory.CreateConnectionAsync();
         }
-        public async Task PublishAsync(string RabbitQ, string message)
+        public async Task PublishAsync(string RabbitQ, SendVerificationEmailMessage message)
         {
             if (_connection == null || !_connection.IsOpen)
                 await ConnectionAsync();
@@ -37,7 +39,7 @@ namespace GCMS.Web.Areas.Admin.Services.RabbitMQ
                     exclusive: false,
                     arguments: null
                 );
-            var body = Encoding.UTF8.GetBytes(message);
+            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
             await channel.BasicPublishAsync(
                 exchange: "",
                 routingKey: RabbitQ,

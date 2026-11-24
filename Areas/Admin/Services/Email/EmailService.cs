@@ -15,7 +15,8 @@ namespace GCMS.Web.Areas.Admin.Services.Email
         }
         public async Task SendVerificationCode(string toEmail, string code, string purpose)
         {
-            var message = new MimeMessage();
+            //ایـجاد یک پیام 
+            var message = new MimeMessage(); 
             message.From.Add(new MailboxAddress(_settings.SenderName, _settings.SenderEmail));
             message.To.Add(new MailboxAddress("", toEmail));
 
