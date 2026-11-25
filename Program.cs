@@ -50,6 +50,7 @@ builder.Services.AddScoped<INewsCategoryRepository, NewsCategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoloeRepository, RoleRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<INewsRepository, NewsRepository>();
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 var app = builder.Build();

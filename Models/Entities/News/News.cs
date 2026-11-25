@@ -30,6 +30,7 @@ namespace GCMS.Web.Models.Entities.News
         public bool NewsIsPublished { get; set; } = true;
 
         public string NewsImageName { get; set; }
+        public string NewsVideoName { get; set; }
 
         public bool Deleted { get; set; } = false;
 

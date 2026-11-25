@@ -1,54 +1,56 @@
-﻿using GCMS.Web.Areas.Admin.Model.News;
-using GCMS.Web.Areas.Admin.Services.Interface;
+﻿using GCMS.Web.Areas.Admin.Services.Interface;
+using GCMS.Web.Data.Context;
 using GCMS.Web.Models.Entities.News;
+using Microsoft.EntityFrameworkCore;
 
 namespace GCMS.Web.Areas.Admin.Services.Repository
 {
     public class NewsRepository : INewsRepository
     {
+        private readonly GCMSContext _db;
+        public NewsRepository(GCMSContext GCMSContext)
+        {
+            _db = GCMSContext;
+        }
         public void DeleteNews(News news)
         {
-            throw new NotImplementedException();
+            _db.Entry(news).State = EntityState.Deleted;
         }
 
         public List<News> GetAllNews()
         {
-            throw new NotImplementedException();
-        }
-
-        public List<NewsCountInterfaceModel> GetAllNewsCategoryNewsCount()
-        {
-            throw new NotImplementedException();
+            return _db.News.Where(n => !n.Deleted).ToList();
         }
 
         public News GetNewsByID(int newsID)
         {
-            throw new NotImplementedException();
+            return  _db.News.FirstOrDefault(n => !n.Deleted && n.NewsID == newsID);
         }
-
-        public int GetNewsCountPerNewsCategory(int newsCategoryID)
-        {
-            throw new NotImplementedException();
-        }
-
         public void InsertNews(News news)
         {
-            throw new NotImplementedException();
+            _db.News.Add(news);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            _db.SaveChanges();
         }
 
-        public Task SaveAsunc()
+        public async Task SaveAsunc()
         {
-            throw new NotImplementedException();
+            await _db.SaveChangesAsync();
+        }
+
+        public string ShowCategoryForNews(int newsID)
+        {
+            var nw = _db.News.FirstOrDefault(n => !n.Deleted && n.NewsID == newsID);
+            var category = _db.NewsCategories.FirstOrDefault(nc => !nc.Deleted && nc.NewsCategoryID == nw.NewsCategoryID);
+            return category.NewsCategoryTitle;  
         }
 
         public void UpdateNews(News news)
         {
-            throw new NotImplementedException();
+            _db.Entry(news).State = EntityState.Modified;
         }
     }
 }

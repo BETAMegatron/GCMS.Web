@@ -1,5 +1,4 @@
-﻿using GCMS.Web.Areas.Admin.Model.News;
-using GCMS.Web.Models.Entities.News;
+﻿using GCMS.Web.Models.Entities.News;
 
 namespace GCMS.Web.Areas.Admin.Services.Interface
 {
@@ -10,8 +9,7 @@ namespace GCMS.Web.Areas.Admin.Services.Interface
         public void InsertNews(News news);
         public void UpdateNews(News news);
         public void DeleteNews(News news);
-        public int GetNewsCountPerNewsCategory(int newsCategoryID);
-        public List<NewsCountInterfaceModel> GetAllNewsCategoryNewsCount();
+        public string ShowCategoryForNews(int newsID);
         public void Save();
         public Task SaveAsunc();
     }
